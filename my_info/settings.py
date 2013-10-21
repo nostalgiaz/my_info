@@ -88,9 +88,15 @@ SECRET_KEY = 'q0bwaf!4^lsf_!58(@oo*3@b=p*uyz#ou^9dhh36$yk$0qg@5('
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
+    #'django.template.loaders.filesystem.Loader',
+    #'django.template.loaders.app_directories.Loader',
+    # 'django.template.loaders.eggs.Loader',
+    'my_info.main.jinja2_template.Loader',
+)
+
+JINJA2_TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    'django.template.loaders.filesystem.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -105,6 +111,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'my_info.urls'
 
+# twitter
 SOCIAL_AUTH_TWITTER_KEY = ''
 SOCIAL_AUTH_TWITTER_SECRET = ''
 
@@ -118,6 +125,8 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'coffin',
+
     'my_info.main',
     'social.apps.django_app.default',
 
@@ -142,7 +151,7 @@ AUTHENTICATION_BACKENDS = (
   #'social.backends.google.GoogleOAuth',
   'social.backends.facebook.FacebookOAuth2',
   'social.backends.twitter.TwitterOAuth',
-  #'social.backends.yahoo.YahooOpenId',
+  'social.backends.yahoo.YahooOpenId',
   'django.contrib.auth.backends.ModelBackend',
 )
 
