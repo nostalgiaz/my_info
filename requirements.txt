@@ -1,0 +1,12 @@
+-e git://github.com/SpazioDati/coffin.git@25eb6593456ec7387de1ae65083cafa68794abb7#egg=Coffin-dev
+Django==1.5.4
+Jinja2==2.7.1
+South==0.8.2
+Werkzeug==0.9.4
+django-extensions==1.2.2
+psycopg2==2.5.1
+python-social-auth==0.1.14
+requests==2.0.0
+simplejson==3.3.1
+twython==3.1.0
+cluster==1.1.2

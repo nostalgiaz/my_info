@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'coffin',
 
     'my_info.main',
+    'my_info.cluster',
     'social.apps.django_app.default',
 
     'django_extensions',

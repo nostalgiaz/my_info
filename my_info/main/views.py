@@ -62,28 +62,31 @@ def home(request):
     return render(request, "main/__site_base.html", )
 
 
-#def my_tweets(request):
-#    user = UserSocialAuth.objects.filter(provider='twitter').get(
-#        user=request.user
-#    )
-#
-#    twitter = Twython(
-#        settings.SOCIAL_AUTH_TWITTER_KEY,
-#        settings.SOCIAL_AUTH_TWITTER_SECRET,
-#        user.tokens.get('oauth_token'),
-#        user.tokens.get('oauth_token_secret'),
-#    )
-#
-#    my_tweets = twitter.get_user_timeline(**{
-#        'count': 10
-#    })
-#
-#    name = request.user.first_name
-#    surname = request.user.last_name
-#
-#    return render(request, "main/my_tweets.html", {
-#        'name': name,
-#        'surname': surname,
-#        'my_tweets': my_tweets
-#    })
+def my_tweets(request):
+    user = UserSocialAuth.objects.filter(provider='twitter').get(
+        user=request.user
+    )
+
+    twitter = Twython(
+        settings.SOCIAL_AUTH_TWITTER_KEY,
+        settings.SOCIAL_AUTH_TWITTER_SECRET,
+        user.tokens.get('oauth_token'),
+        user.tokens.get('oauth_token_secret'),
+    )
+
+    my_tweets = twitter.get_user_timeline(**{
+        'count': 100
+    })
+
+    #f = open('/Users/nostalgia/tweets.json', 'w')
+    #f.write(json.dumps(my_tweets))
+
+    name = request.user.first_name
+    surname = request.user.last_name
+
+    return render(request, "main/my_tweets.html", {
+        'name': name,
+        'surname': surname,
+        'my_tweets': my_tweets
+    })
 

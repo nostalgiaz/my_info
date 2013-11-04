@@ -6,6 +6,6 @@ urlpatterns = patterns(
     url(r'^$', "home", name="home"),
     url(r'^get_data/$', "get_data", name="get_data"),
 
-    #url(r'^my_tweets/$', "my_tweets", name="my_tweets"),
+    url(r'^my_tweets/$', "my_tweets", name="my_tweets"),
     #url(r'^geocoder/$', "geocoder", name="geocoder"),
 )
