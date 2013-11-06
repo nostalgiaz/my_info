@@ -115,6 +115,9 @@ ROOT_URLCONF = 'my_info.urls'
 SOCIAL_AUTH_TWITTER_KEY = ''
 SOCIAL_AUTH_TWITTER_SECRET = ''
 
+DATATXT_APP_ID = ''
+DATATXT_APP_KEY = ''
+
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'my_info.wsgi.application'
 

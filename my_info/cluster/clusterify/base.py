@@ -1,6 +1,6 @@
 class BaseClusterify(object):
-    def __init__(self, texts):
-        self.texts = texts
+    def __init__(self, reader):
+        self.reader = reader
 
     def annotate(self):
         # annota i texts con dataTXT

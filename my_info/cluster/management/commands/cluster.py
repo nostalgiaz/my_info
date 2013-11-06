@@ -1,5 +1,6 @@
 from django.core.management import BaseCommand
 
+from my_info.cluster.clusterify import KMeanClusterify
 from my_info.cluster.reader import TwitterReader
 
 
@@ -9,8 +10,10 @@ class Command(BaseCommand):
             print "Usage: python manage.py cluster <twitter_username>"
             return
 
-        reader = TwitterReader(args[0])
+        username = args[0]
+        reader = TwitterReader(username)
 
         print list(reader.texts())
-        clusterify = KMeanClusterify(reader.texts())
-        print clusterify.do_cluster()
+        clusterify = KMeanClusterify(reader)
+        print clusterify.annotate()
+        #print clusterify.do_cluster()
