@@ -2,6 +2,7 @@
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+DEBUG_CACHE = False
 
 ADMINS = (
     ('Mattia Larentis', 'mattia@larentis.eu'),

@@ -1,3 +1,5 @@
+from cluster import KMeansClustering
+
 from my_info.cluster.annotator import Annotator
 from my_info.cluster.clusterify.base import BaseClusterify
 
@@ -11,7 +13,4 @@ class KMeanClusterify(BaseClusterify):
         return annotator.annotate()
 
     def do_cluster(self):
-        pass
-        # from cluster import KMeansClustering
-        # annotare
-        # 
+        KMeanClusterify

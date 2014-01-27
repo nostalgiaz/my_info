@@ -1,4 +1,5 @@
 -e git://github.com/SpazioDati/coffin.git@25eb6593456ec7387de1ae65083cafa68794abb7#egg=Coffin-dev
+-e git://github.com/armisael/python-dandelion.git#egg=dandelion-eu
 Django==1.5.4
 Jinja2==2.7.1
 South==0.8.2
