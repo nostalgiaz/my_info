@@ -13,7 +13,11 @@ class Command(BaseCommand):
         username = args[0]
         reader = TwitterReader(username)
 
-        print list(reader.texts())
-        clusterify = KMeanClusterify(reader)
-        print clusterify.annotate()
-        #print clusterify.do_cluster()
+        #list(reader.texts())
+        try:
+            clusterify = KMeanClusterify(reader)
+            clusterify.annotate()
+            clusterify.do_cluster()
+        except:
+            import traceback
+            traceback.print_exc()
