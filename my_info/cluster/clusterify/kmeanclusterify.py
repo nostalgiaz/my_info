@@ -1,5 +1,6 @@
 from collections import defaultdict
 import numpy as np
+from networkx import Graph, normalized_laplacian_matrix
 
 from my_info.cluster.annotator import Annotator
 from my_info.cluster.clusterify.base import BaseClusterify
@@ -18,7 +19,7 @@ class KMeanClusterify(BaseClusterify):
         return self.annotations
 
     def _cut(self, set1, set2):
-        sum_ = 0
+        sum_ = 0.
         for tc in set1:
             for td in set2:
                 sum_ += self.datatxt.rel(tc, td)
@@ -26,7 +27,7 @@ class KMeanClusterify(BaseClusterify):
         return sum_
 
     def _vol(self, set1):
-        sum_ = 0
+        sum_ = 0.
         for tc in set1:
             for td in set1:
                 sum_ += self.datatxt.rel(tc, td)
@@ -64,6 +65,7 @@ class KMeanClusterify(BaseClusterify):
         big_clusters = [topic_set.keys()]
         while len(big_clusters) <= k_size or len(topic_set) == len(big_clusters):
             print len(big_clusters), big_clusters
+            print "*" * 80
             min_eigenvalue = None
             min_eigenvector = None
             selected_cluster_index = None
@@ -71,24 +73,31 @@ class KMeanClusterify(BaseClusterify):
             for cluster_index, big_cluster in enumerate(big_clusters):
                 if len(big_cluster) == 1:
                     continue
-                matrix = np.zeros((len(big_cluster), len(big_cluster)))
+                rel_matrix = np.zeros((len(big_cluster), len(big_cluster)))
                 for i, topic1 in enumerate(big_cluster):
-                    matrix[i][i] = 1.
+                    #rel_matrix[i][i] = 1.
                     for j, topic2 in enumerate(big_cluster):
                         if j > i:
-                            matrix[i][j] = self.datatxt.rel(topic1, topic2)
-                            matrix[j][i] = matrix[i][j]
+                            rel_matrix[i][j] = self.datatxt.rel(topic1, topic2)
+                            rel_matrix[j][i] = rel_matrix[i][j]
 
-                laplatian_matrix = np.identity(len(big_cluster)) - matrix  # ?
+                edges = []
+                for x, row in enumerate(rel_matrix):
+                    for i in range(len(row)):
+                        edges.append((x, i, rel_matrix[x][i]))
+
+                g = Graph()
+                g.add_weighted_edges_from(edges)
+                laplatian_matrix = normalized_laplacian_matrix(g)
 
                 # ?
                 eigenvalues, eigenvectors = np.linalg.eig(laplatian_matrix)
 
-                eigenvalue = eigenvalues[2]
+                eigenvalue = eigenvalues[1]
 
                 if min_eigenvalue is None or eigenvalue < min_eigenvalue:
                     min_eigenvalue = eigenvalue
-                    min_eigenvector = eigenvectors[2]
+                    min_eigenvector = eigenvectors[1]
                     selected_cluster_index = cluster_index
 
             selected_cluster = big_clusters[selected_cluster_index]
