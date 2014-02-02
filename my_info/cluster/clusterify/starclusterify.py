@@ -7,43 +7,35 @@ class StarClusterify(BaseClusterify):
         super(StarClusterify, self).__init__(reader=reader)
 
     def do_cluster(self):
-        beta = .5
+        min_relatedness_required = .5
+        clusters = []
         topics = {}
 
-        for snippet in self.snippets:
-            confidence = snippet.get('confidence')
+        for id, snippet in self.snippets.iteritems():
+            for page, confidence in snippet.get('annotations').iteritems():
+                topic = topics.get(page)
 
-            for ann_index, annotation in enumerate(snippet.get('annotations')):
-                topic = topics.get(annotation)
                 if topic is None:
-                    topic = {
-                        'page': annotation,
-                        'score': 0,
-                        'tweets': [],
-                        'rel': 0,  # ?
-                    }
+                    topic = {'score': 0, 'tweets': []}
                 else:
-                    topic['score'] += confidence[ann_index]
-                topic['tweets'].append(snippet)
-                topics[annotation] = topic
+                    topic['score'] += confidence
+                topic['tweets'].append(id)
+                topics[page] = topic
 
-        ranked_topic = [value for key, value in topics.iteritems()]
-
-        ranked_topic_sorted = sorted(
-            ranked_topic,
-            key=lambda x: x['score'],
+        ranked_topic = sorted(
+            topics.iteritems(),
+            key=lambda (k, v): v['score'],
+            reverse=True
         )
 
-        clusters = []
-
-        for topic in ranked_topic_sorted:
+        for page, topic in ranked_topic:
             merged = False
 
-            for cluster_index, cluster in enumerate(clusters):
-                rel = self.datatxt.rel(topic['page'], cluster['main']['page'])
+            for cluster in clusters:
+                rel = self.datatxt.rel(page, cluster['page'])
 
-                if rel > beta:
-                    cluster['topics'].append(topic)
+                if rel > min_relatedness_required:
+                    cluster['topics'].append(page)
                     cluster['tweets'] += topic['tweets']
                     topic['rel'] = rel
                     merged = True
@@ -51,41 +43,13 @@ class StarClusterify(BaseClusterify):
 
             if not merged:
                 clusters.append({
-                    'main': topic,
-                    'topics': [topic],
+                    'page': page,
+                    'topics': [page],
                     'tweets': topic['tweets'],
                 })
 
         for cluster in clusters:
-            elements = []
+            del cluster['tweets']
+            del cluster['page']
 
-            if not "topics" in cluster:
-                continue
-
-            for topic in cluster['topics']:
-                #print topic
-                elements.append({
-                    'id': topic['page'],
-                    'score': topic['score'],
-                    'rel': topic['rel'],  # if 'rel' in topic else None,  # ?
-                    'title': topic['page'],
-                    'tweets': [tweet['id'] for tweet in topic['tweets']],
-                })
-
-            clusters.append({
-                'elements': elements,
-                'tweets': [tweet['id'] for tweet in cluster['tweets']]
-            })
-
-        result = {}
-
-        for cluster in clusters:
-            if not "main" in cluster:
-                continue
-            result[cluster['main']['page']] = {
-                'title': cluster['main']['page'],
-                'items': [r['page'] for r in cluster['topics']]
-            }
-
-        print result
-        return result
+        return clusters

@@ -14,14 +14,18 @@ class Annotator(object):
         self.datatxt = DataTXT()
 
     def annotate(self):
-        if DEBUG_CACHE:
-            return [self.datatxt.nex(text) for text in self.texts]
+        if not self.cache.has(self.cache_key) or DEBUG_CACHE:
+            annotated_texts_tmp = [
+                self.datatxt.nex(text) for text in self.texts
+            ]
+            annotated_texts = {x['id']: x for x in annotated_texts_tmp}
 
-        if not self.cache.has(self.cache_key):
-            annotated_texts = [self.datatxt.nex(text) for text in self.texts]
-            print "*" * 80
-            #annotated_text = 'annotated_text'
+            for k, v in annotated_texts.iteritems():
+                del v['id']
+
+            if DEBUG_CACHE:
+                return annotated_texts
+
             return self.cache.set(self.cache_key, annotated_texts)
 
-        print "=" * 80
         return self.cache.get(self.cache_key)

@@ -1,4 +1,4 @@
-import hashlib
+from hashlib import sha1
 from dandelion import datatxt, DandelionException
 from werkzeug.exceptions import TooManyRequests
 from my_info.settings import DATATXT_APP_ID, DATATXT_APP_KEY
@@ -16,20 +16,18 @@ class DataTXT(object):
     def nex(self, *args):
         try:
             annotated = self.datatxt.nex(args[0], lang='en', min_confidence=.6)
+            id = sha1(annotated.lang + str(annotated.annotations)).hexdigest()
+
             return {
-                'id': hashlib.sha1(
-                    annotated.lang + str(annotated.annotations)).hexdigest(),
+                'id': id,
                 'lang': annotated.lang,
-                'annotations': [ann.uri for ann in annotated.annotations],
-                'confidence': [ann.confidence for ann in annotated.annotations]
+                'text': args[0],
+                'annotations': {
+                    a.uri: a.confidence for a in annotated.annotations
+                }
             }
         except DandelionException:
-            return {
-                'id': 'undefined',
-                'lang': 'undefined',
-                'annotations': [],
-                'confidence': '0',
-            }
+            pass
 
     def rel(self, topic1, topic2):
         key = "{}{}".format(topic1, topic2)
