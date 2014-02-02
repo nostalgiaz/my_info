@@ -2,21 +2,12 @@ from collections import defaultdict
 import numpy as np
 from networkx import Graph, normalized_laplacian_matrix
 
-from my_info.cluster.annotator import Annotator
 from my_info.cluster.clusterify.base import BaseClusterify
-from my_info.cluster.datatxt import DataTXT
 
 
-class KMeanClusterify(BaseClusterify):
+class SpectralClusterify(BaseClusterify):
     def __init__(self, reader):
-        self.annotations = []
-        self.datatxt = DataTXT()
-        super(KMeanClusterify, self).__init__(reader=reader)
-
-    def annotate(self):
-        annotator = Annotator(self.reader.texts())
-        self.annotations = annotator.annotate()
-        return self.annotations
+        super(SpectralClusterify, self).__init__(reader=reader)
 
     def _cut(self, set1, set2):
         sum_ = 0.
@@ -49,7 +40,7 @@ class KMeanClusterify(BaseClusterify):
     def do_cluster(self):
         topic_set = defaultdict(int)
         n_snippets = len(self.annotations)
-        k_size = 10
+        k_size = 1
         # snippet = tweet
         # topic = entity
 
@@ -94,6 +85,7 @@ class KMeanClusterify(BaseClusterify):
                 eigenvalues, eigenvectors = np.linalg.eig(laplatian_matrix)
 
                 eigenvalue = eigenvalues[1]
+                print eigenvalues
 
                 if min_eigenvalue is None or eigenvalue < min_eigenvalue:
                     min_eigenvalue = eigenvalue
@@ -112,18 +104,5 @@ class KMeanClusterify(BaseClusterify):
                 cluster for cluster in big_clusters
                 if cluster != selected_cluster
             ] + [selected_cluster[:cut], selected_cluster[cut:]]
-
-            #print matrix
-            #print laplatian_matrix
-
-        # trovare i big cluster
-        # per ogni big cluster:
-            # trova la matrice normalizzata di laplace
-            # calcola il secondo eigenvalue
-            # scegli il big cluster che ha secondo eigenvalue minore
-        # ordinare i nodi del bigcluster in base alla loro proiezione sul loro
-                # eigenvector
-        # tagliare nel punto che minimizza la sommatoria n Ncut
-
 
         return big_clusters

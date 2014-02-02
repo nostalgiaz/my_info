@@ -1,3 +1,4 @@
+import hashlib
 from dandelion import datatxt, DandelionException
 from werkzeug.exceptions import TooManyRequests
 from my_info.settings import DATATXT_APP_ID, DATATXT_APP_KEY
@@ -14,15 +15,20 @@ class DataTXT(object):
 
     def nex(self, *args):
         try:
-            annotated = self.datatxt.nex(args[0], lang='en')
+            annotated = self.datatxt.nex(args[0], lang='en', min_confidence=.6)
             return {
+                'id': hashlib.sha1(
+                    annotated.lang + str(annotated.annotations)).hexdigest(),
                 'lang': annotated.lang,
-                'annotations': [ann.uri for ann in annotated.annotations]
+                'annotations': [ann.uri for ann in annotated.annotations],
+                'confidence': [ann.confidence for ann in annotated.annotations]
             }
         except DandelionException:
             return {
-                'lang': "undefined",
+                'id': 'undefined',
+                'lang': 'undefined',
                 'annotations': [],
+                'confidence': '0',
             }
 
     def rel(self, topic1, topic2):

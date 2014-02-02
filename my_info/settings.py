@@ -100,6 +100,10 @@ JINJA2_TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
 )
 
+JINJA2_DISABLED_TEMPLATES = (
+    'admin'
+)
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

@@ -1,6 +1,7 @@
 from django.core.management import BaseCommand
 
-from my_info.cluster.clusterify import KMeanClusterify
+from my_info.cluster.clusterify import SpectralClusterify
+from my_info.cluster.clusterify import StarClusterify
 from my_info.cluster.reader import TwitterReader
 
 
@@ -15,7 +16,8 @@ class Command(BaseCommand):
 
         #list(reader.texts())
         try:
-            clusterify = KMeanClusterify(reader)
+            #clusterify = SpectralClusterify(reader)
+            clusterify = StarClusterify(reader)
             clusterify.annotate()
             clusterify.do_cluster()
         except:

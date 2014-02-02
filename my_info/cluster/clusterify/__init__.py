@@ -1,1 +1,2 @@
-from my_info.cluster.clusterify.kmeanclusterify import KMeanClusterify
+from my_info.cluster.clusterify.spectralclusterify import SpectralClusterify
+from my_info.cluster.clusterify.starclusterify import StarClusterify
