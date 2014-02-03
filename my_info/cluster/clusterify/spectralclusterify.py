@@ -7,6 +7,7 @@ from my_info.cluster.clusterify.base import BaseClusterify
 
 class SpectralClusterify(BaseClusterify):
     def __init__(self, reader):
+        self.pruned = set()
         super(SpectralClusterify, self).__init__(reader=reader)
 
     def _cut(self, set1, set2):
@@ -38,25 +39,42 @@ class SpectralClusterify(BaseClusterify):
         return min_index
 
     def do_cluster(self):
+        #np.set_printoptions(precision=2, suppress=True, linewidth=200)
         topic_set = defaultdict(int)
-        n_snippets = len(self.annotations)
-        k_size = 1
-        # snippet = tweet
-        # topic = entity
+        n_topic = 0
+        max_coverage = .7
+        rel_limit = .3
+        #small_limit = 2
+        n_snippets = len(self.snippets)
+        pages = []
+        k_max = 10
 
-        for snippet in self.annotations:
-            for topic in snippet['annotations']:
-                topic_set[topic] += 1
+        for _, snippet in self.snippets.iteritems():
+            for page, _ in snippet.get('annotations').iteritems():
+                topic_set[page] += 1.
+                n_topic += 1.
+                pages.append(page)
 
-        topic_set = {
-            key: value for key, value in topic_set.items()
-            if value <= n_snippets * .5
-        }
+        #deg = np.zeros(len(pages))
+        #sym = np.zeros((len(pages), len(pages)))
+
+        #for i, page1 in enumerate(pages):
+        #    for j, page2 in enumerate(pages):
+        #        if i <= j:
+        #            continue
+        #        else:
+        #            rel = self.datatxt.rel(page1, page2)
+        #
+        #            if rel < rel_limit:
+        #                continue
+        #
+        #            sym[i][j] = rel
+        #            sym[j][i] = rel
+        #            deg[j] += rel
+        #            deg[i] += rel
 
         big_clusters = [topic_set.keys()]
-        while len(big_clusters) <= k_size or len(topic_set) == len(big_clusters):
-            print len(big_clusters), big_clusters
-            print "*" * 80
+        while len(big_clusters) <= k_max or len(topic_set) == len(big_clusters):
             min_eigenvalue = None
             min_eigenvector = None
             selected_cluster_index = None
@@ -64,45 +82,75 @@ class SpectralClusterify(BaseClusterify):
             for cluster_index, big_cluster in enumerate(big_clusters):
                 if len(big_cluster) == 1:
                     continue
-                rel_matrix = np.zeros((len(big_cluster), len(big_cluster)))
+
+                rel = np.zeros((len(big_cluster), len(big_cluster)))
+                deg = np.zeros(len(big_cluster))
+                #assert False, len(deg)
+
                 for i, topic1 in enumerate(big_cluster):
-                    #rel_matrix[i][i] = 1.
                     for j, topic2 in enumerate(big_cluster):
                         if j > i:
-                            rel_matrix[i][j] = self.datatxt.rel(topic1, topic2)
-                            rel_matrix[j][i] = rel_matrix[i][j]
+                            rel_value = self.datatxt.rel(topic1, topic2)
+                            # if?
+                            rel[i][j] = rel_value
+                            rel[j][i] = rel_value
+                            deg[i] += rel_value
+                            deg[j] += rel_value
 
-                edges = []
-                for x, row in enumerate(rel_matrix):
-                    for i in range(len(row)):
-                        edges.append((x, i, rel_matrix[x][i]))
+                #assert False, deg
 
-                g = Graph()
-                g.add_weighted_edges_from(edges)
-                laplatian_matrix = normalized_laplacian_matrix(g)
+                #edges = []
+                #for x, row in enumerate(rel):
+                #    for i in range(len(row)):
+                #        edges.append((x, i, rel[x][i]))
+                #
+                #g = Graph()
+                #g.add_weighted_edges_from(edges)
+                #laplatian_matrix = normalized_laplacian_matrix(g)
+                #d_matrix = ([1/x ** .5 for x in deg] * np.identity(len(big_cluster)))
+                #assert False, (d_matrix)
+                #d_matrix = [(1/x)**.5 for x in deg] * np.identity(len(big_cluster))
+                #laplatian_matrix = np.identity(len(big_cluster)) - (d_matrix * rel * d_matrix)  # ?
 
-                # ?
+                rel_row = np.zeros(len(big_cluster))
+                laplatian_matrix = np.zeros((len(big_cluster), len(big_cluster)))
+
+                for i in range(len(big_cluster)):
+                    for j in range(len(big_cluster)):
+                        rel_row[i] += rel[i][j]
+
+                for i in range(len(big_cluster)):
+                    for j in range(len(big_cluster)):
+                        if i == j or rel_row[i] <= 0:
+                            laplatian_matrix[i][j] = 0
+                        else:
+                            laplatian_matrix[i][j] = rel[i][j] / rel_row[i]
+
                 eigenvalues, eigenvectors = np.linalg.eig(laplatian_matrix)
 
-                eigenvalue = eigenvalues[1]
-                print eigenvalues
+                sorted_eigen = sorted(
+                    zip(eigenvalues, eigenvectors), key=lambda x: x[0],
+                    reverse=True
+                )
 
-                if min_eigenvalue is None or eigenvalue < min_eigenvalue:
-                    min_eigenvalue = eigenvalue
-                    min_eigenvector = eigenvectors[1]
+                second_eigenvalue = sorted_eigen[1][0]
+
+                if min_eigenvalue is None or min_eigenvalue > second_eigenvalue:
+                    min_eigenvalue = second_eigenvalue
+                    min_eigenvector = sorted_eigen[1][1]
                     selected_cluster_index = cluster_index
 
             selected_cluster = big_clusters[selected_cluster_index]
-            sorted_nodes = sorted(
-                enumerate(selected_cluster),
-                key=lambda x: min_eigenvector[x[0]]
-            )
 
-            sorted_nodes = [x[1] for x in sorted_nodes]
+            sorted_nodes = [x[1] for x in sorted(
+                enumerate(selected_cluster),
+                key=lambda x: min_eigenvector[x[0]],
+            )]
+
             cut = self._ncut(sorted_nodes)
             big_clusters = [
                 cluster for cluster in big_clusters
                 if cluster != selected_cluster
-            ] + [selected_cluster[:cut], selected_cluster[cut:]]
+            ] + [sorted_nodes[:cut], sorted_nodes[cut:]]
 
         return big_clusters

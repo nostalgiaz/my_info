@@ -7,7 +7,7 @@ class StarClusterify(BaseClusterify):
         super(StarClusterify, self).__init__(reader=reader)
 
     def do_cluster(self):
-        min_relatedness_required = .5
+        min_relatedness_required = .3
         clusters = []
         topics = {}
 
