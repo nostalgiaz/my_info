@@ -117,19 +117,22 @@ class SpectralClusterify(BaseClusterify):
                 #print
                 #print rel_row
                 #return
-                #laplatian_matrix = rel_row * np.identity(len(rel_row)) - rel
-                laplatian_matrix = np.zeros(
-                    (len(big_cluster), len(big_cluster))
-                )
+                mode = 1
+                if mode == 1:
+                    laplatian_matrix = rel_row * np.identity(len(rel_row)) - rel
+                else:
+                    laplatian_matrix = np.zeros(
+                        (len(big_cluster), len(big_cluster))
+                    )
 
-                for i in range(len(big_cluster)):
-                    for j in range(len(big_cluster)):
-                        if i == j or rel_row[i] <= 0:
-                            laplatian_matrix[i][j] = 0
-                        else:
-                            laplatian_matrix[i][j] = rel[i][j] / rel_row[i]
-                #
-
+                    for i in range(len(big_cluster)):
+                        for j in range(len(big_cluster)):
+                            if i == j or rel_row[i] <= 0:
+                                laplatian_matrix[i][j] = 0
+                            else:
+                                laplatian_matrix[i][j] = rel[i][j] / rel_row[i]
+                    #
+                print "laplatian", laplatian_matrix
 
                 #for x in range(len(laplatian_matrix)):
                 #    laplatian_matrix[x][x] = 0
