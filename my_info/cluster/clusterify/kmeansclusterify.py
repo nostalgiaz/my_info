@@ -1,7 +1,9 @@
+
 from collections import defaultdict
 import numpy as np
+
 from scipy.linalg import eig
-from scipy.cluster.vq import kmeans2
+from scipy.cluster.vq import kmeans2, kmeans
 
 from my_info.cluster.clusterify.base import BaseClusterify
 
@@ -23,14 +25,18 @@ class KMeansClusterify(BaseClusterify):
         return np.array(newidx)
 
     def _cluster_points(self, laplatian_matrix):
+        # initialize random, in order to be deterministic
+        np.random.seed((1000, 2000))
+
         evals, evcts = eig(laplatian_matrix)
         evals, evcts = evals.real, evcts.real
         edict = dict(zip(evals, evcts.transpose()))
         evals = sorted(edict.keys())
 
+
         _, idx = kmeans2(
             np.array([edict[k] for k in evals[1:3]]).transpose(),
-            6
+            10
         )
         return self._rename_clusters(idx)
 
