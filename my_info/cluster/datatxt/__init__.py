@@ -1,6 +1,5 @@
 from hashlib import sha1
 from dandelion import datatxt, DandelionException
-from werkzeug.exceptions import TooManyRequests
 from my_info.settings import DATATXT_APP_ID, DATATXT_APP_KEY
 import requests
 
@@ -30,6 +29,13 @@ class DataTXT(object):
             pass
 
     def rel(self, topic1, topic2):
+        """
+            1) se le dire pagine sono nella stessa lingua, fai quello che stai facendo ora
+            2) se sono in due lingue diverse, calcola tramite il recon il topic relativo nelle altre lingue
+            2a) se entrambe hanno una pagina anche nell'altra lingua, fai la media delle due relatedness (o anche il max, vedi tu)
+            2b) se solo una ha la traduzione, restituisci la relatedness in quella lingua solo
+            2c) se nessuna delle due ha la pagina corrispondente (raro, secondo me) restituisci 0
+        """
         key = "{}{}".format(topic1, topic2)
         if key not in self._cache:
             value = requests.get(
