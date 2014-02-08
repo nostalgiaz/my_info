@@ -14,6 +14,7 @@ class Command(BaseCommand):
                   "<star|spectra|kmeans>"
             return
 
+        k = 10
         pp = pprint.PrettyPrinter(indent=4)
         username = args[0]
         reader = TwitterReader(username)
@@ -22,11 +23,11 @@ class Command(BaseCommand):
             clusterify = None
 
             if args[1] == "spectral":
-                clusterify = SpectralClusterify(reader)
+                clusterify = SpectralClusterify(reader, k)
             elif args[1] == "star":
                 clusterify = StarClusterify(reader)
             elif args[1] == "kmeans":
-                clusterify = KMeansClusterify(reader)
+                clusterify = KMeansClusterify(reader, k)
 
             clusterify.annotate()
             pp.pprint(clusterify.do_cluster())

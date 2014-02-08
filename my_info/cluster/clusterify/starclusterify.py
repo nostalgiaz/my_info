@@ -1,4 +1,3 @@
-# from collections import defaultdict
 from my_info.cluster.clusterify.base import BaseClusterify
 
 
@@ -48,8 +47,6 @@ class StarClusterify(BaseClusterify):
                     'tweets': topic['tweets'],
                 })
 
-        for cluster in clusters:
-            del cluster['tweets']
-            del cluster['page']
-
-        return clusters
+        return self._generate_output_response({
+            c['page']: c['topics'] for c in clusters
+        })
