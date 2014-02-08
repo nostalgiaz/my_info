@@ -56,7 +56,6 @@ class BaseClusterify(object):
 
     @staticmethod
     def _generate_output_response(response):
-        print response
         return {
             'clusters': response.values()
         }
