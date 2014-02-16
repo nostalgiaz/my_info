@@ -6,6 +6,7 @@ urlpatterns = patterns(
     'my_info.main.views',
 
     url(r'^$', "home", name="home"),
+    url(r'cluster$', "cluster", name="cluster"),
     url(
         r'login/$',
         TemplateView.as_view(template_name='registration/login.html'),

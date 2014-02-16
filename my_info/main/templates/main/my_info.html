@@ -1,9 +1,22 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>my_info</title>
 </head>
 <body>
-    <div id="cluster">{{ twitter_cluster_data }}</div>
+    <div id="cluster"></div>
+
+    <script src="{% static "jquery/dist/jquery.js" %}"></script>
+    <script>
+        window.my_info = {
+            urls: {
+                cluster: "{% url "cluster" %}"
+            }
+        };
+    </script>
+    <script src="{% static "d3/d3.js" %}"></script>
+    <script src="{% static "js/cluster.js" %}"></script>
 </body>
 </html>

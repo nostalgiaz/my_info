@@ -22,12 +22,15 @@ class BaseClusterify(object):
         self.snippets = annotator.annotate()
         return self.snippets
 
-    def _generate_adjagent_matrix(self):
+    def _generate_topic_set(self):
         for _, snippet in self.snippets.iteritems():
             for page, _ in snippet.get('annotations').iteritems():
                 self.topic_set[page] += 1.
                 self.n_topic += 1.
                 self.pages.append(page)
+
+    def _generate_adjagent_matrix(self):
+        self._generate_topic_set()
 
         rel = zeros((len(self.topic_set), len(self.topic_set)))
         degree = zeros(len(self.topic_set))
@@ -54,8 +57,13 @@ class BaseClusterify(object):
 
         return response
 
-    @staticmethod
-    def _generate_output_response(response):
+    def _generate_output_response(self, response):
+        if not self.topic_set:
+            self._generate_topic_set()
+
+        print self.topic_set
+        print response.values()
+
         return {
             'clusters': response.values()
         }
