@@ -123,6 +123,9 @@ SOCIAL_AUTH_TWITTER_SECRET = ''
 DATATXT_APP_ID = ''
 DATATXT_APP_KEY = ''
 
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = "/"
+
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'my_info.wsgi.application'
 

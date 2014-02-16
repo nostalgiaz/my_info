@@ -1,11 +1,15 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
+from django.contrib.auth.views import logout
+from django.views.generic import TemplateView
 
 urlpatterns = patterns(
     'my_info.main.views',
 
     url(r'^$', "home", name="home"),
-    url(r'^get_data/$', "get_data", name="get_data"),
-
-    url(r'^my_tweets/$', "my_tweets", name="my_tweets"),
-    #url(r'^geocoder/$', "geocoder", name="geocoder"),
+    url(
+        r'login/$',
+        TemplateView.as_view(template_name='registration/login.html'),
+        name="login"
+    ),
+    url(r'logout/$', logout, name="logout")
 )

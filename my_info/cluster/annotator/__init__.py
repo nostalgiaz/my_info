@@ -18,7 +18,9 @@ class Annotator(object):
             annotated_texts_tmp = [
                 self.datatxt.nex(text) for text in self.texts
             ]
-            annotated_texts = {x['id']: x for x in annotated_texts_tmp}
+            annotated_texts = {
+                x['id']: x for x in annotated_texts_tmp if x is not None
+            }
 
             for k, v in annotated_texts.iteritems():
                 del v['id']

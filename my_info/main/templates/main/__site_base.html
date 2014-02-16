@@ -4,16 +4,17 @@
     <title>my_info</title>
 </head>
 <body>
-    {% include "main/my_map.html" %}
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script>
-    <script>
-        $.get('{{ url ("get_data") }}', function (data) {
-            window.myInfo = data;
-        });
-    </script>
-    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script src="{% static "javascript/deps/d3-world.js" %}"></script>
-    <script src="{% static "javascript/deps/d3-map-generator.js" %}"></script>
+    <div id="cluster">{{ twitter_cluster_data }}</div>
+{#    {% include "main/my_map.html" %}#}
+{##}
+{#    <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script>#}
+{#    <script>#}
+{#        $.get('{{ url ("get_data") }}', function (data) {#}
+{#            window.myInfo = data;#}
+{#        });#}
+{#    </script>#}
+{#    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>#}
+{#    <script src="{% static "javascript/deps/d3-world.js" %}"></script>#}
+{#    <script src="{% static "javascript/deps/d3-map-generator.js" %}"></script>#}
 </body>
 </html>
