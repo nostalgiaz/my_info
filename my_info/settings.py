@@ -1,8 +1,16 @@
 # Django settings for my_info project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 DEBUG_CACHE = False
+
+PROJECT_ROOT_BOWER = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), ".."),
+)
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 
 ADMINS = (
     ('Mattia Larentis', 'mattia@larentis.eu'),
@@ -63,11 +71,13 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
+
+BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT_BOWER, 'components')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -81,7 +91,13 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
+BOWER_INSTALLED_APPS = (
+    'jquery',
+    'd3',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -142,6 +158,7 @@ INSTALLED_APPS = (
     'my_info.cluster',
     'social.apps.django_app.default',
 
+    'djangobower',
     'django_extensions',
 
     'django.contrib.auth',
