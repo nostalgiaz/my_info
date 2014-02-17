@@ -5,7 +5,6 @@
     clusterPadding = 10, // separation between different-color circles
     maxRadius = 12;
 
-
   $.get(window.my_info.urls.cluster).done(function (data) {
     $('#cluster').html('');
     var clusters = new Array(data.clusters.length);
@@ -24,6 +23,14 @@
       })
     });
 
+    var tip = d3.tip()
+      .attr('class', 'd3-tip')
+      .html(function (d) {
+        return decodeURIComponent(d.url.split("/").pop().replace(/_/g, " "));
+      })
+      .direction('e')
+      .offset([0, 3]);
+
     var color = d3.scale.category20().domain(d3.range(nodes.length));
 
     var force = d3.layout.force()
@@ -36,7 +43,8 @@
 
     var svg = d3.select("body").append("svg")
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .call(tip);
 
     var circle = svg.selectAll("circle")
       .data(nodes)
@@ -44,9 +52,14 @@
       .attr("r", function (d) {
         return d.radius;
       })
-      .style("fill", function (d) {
+      .attr("fill", function (d) {
         return color(d.cluster);
       })
+      .attr('data-topic', function (d) {
+        return d.url.split('/').pop();
+      })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
       .call(force.drag);
 
     function tick(e) {

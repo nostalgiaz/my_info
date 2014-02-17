@@ -98,6 +98,7 @@ STATICFILES_FINDERS = (
 BOWER_INSTALLED_APPS = (
     'jquery',
     'd3',
+    'd3-tip',
 )
 
 # Make this unique, and don't share it with anybody.

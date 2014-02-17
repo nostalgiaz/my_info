@@ -4,6 +4,7 @@
 <html>
 <head>
     <title>my_info</title>
+    <link rel="stylesheet" href="{% static "style/cluster.css" %}" />
 </head>
 <body>
     <h1>Hi {{ user.first_name }} <i>@{{ user}}</i> {{ user.last_name }}!</h1>
@@ -19,6 +20,7 @@
         };
     </script>
     <script src="{% static "d3/d3.js" %}"></script>
+    <script src="{% static "d3-tip/index.js" %}"></script>
     <script src="{% static "js/cluster.js" %}"></script>
 </body>
 </html>

@@ -1,0 +1,23 @@
+.d3-tip {
+  line-height: 1;
+  padding: 12px;
+  background: #333;
+  color: #fff;
+}
+
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: #000;
+  position: absolute;
+}
+
+.d3-tip.e:after {
+  content: "\25C0";
+  margin: -4px 0 0 0;
+  top: 50%;
+  left: -8px;
+}
