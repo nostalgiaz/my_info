@@ -6,10 +6,11 @@ from django.contrib.auth.models import User
 from social.apps.django_app.default.models import UserSocialAuth
 from twython import Twython
 from my_info.cluster.reader.base import BaseReader
+from my_info.settings import NUMBER_OF_TWEETS
 
 
 class TwitterReader(BaseReader):
-    def __init__(self, username, number_of_tweets=10):
+    def __init__(self, username, number_of_tweets=NUMBER_OF_TWEETS):
         super(TwitterReader, self).__init__(
             username=username,
             number_of_tweets=number_of_tweets

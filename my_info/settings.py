@@ -222,6 +222,8 @@ LOGGING = {
     }
 }
 
+NUMBER_OF_TWEETS = 50
+
 try:
     from local_settings import *
 except ImportError:

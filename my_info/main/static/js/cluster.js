@@ -5,7 +5,6 @@
     clusterPadding = 6, // separation between different-color circles
     maxRadius = 12;
 
-  var color = d3.scale.category10().domain(d3.range(m));
 
   $.get(window.my_info.urls.cluster).done(function (data) {
     var clusters = new Array(data.clusters.length);
@@ -23,6 +22,8 @@
         nodes.push(d);
       })
     });
+
+    var color = d3.scale.category10().domain(d3.range(nodes.length));
 
     var force = d3.layout.force()
       .nodes(nodes)
