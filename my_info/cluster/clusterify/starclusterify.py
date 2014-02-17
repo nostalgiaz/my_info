@@ -36,7 +36,6 @@ class StarClusterify(BaseClusterify):
                 if rel > min_relatedness_required:
                     cluster['topics'].append(page)
                     cluster['tweets'] += topic['tweets']
-                    topic['rel'] = rel
                     merged = True
                     break
 

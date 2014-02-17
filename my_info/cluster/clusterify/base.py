@@ -14,6 +14,7 @@ class BaseClusterify(object):
         self.n_topic = 0
         self.pages = []
         self.topic_set = defaultdict(int)
+        self.rel_matrix = []
         self.k = k
         seed((1000, 2000))
 
@@ -22,18 +23,17 @@ class BaseClusterify(object):
         self.snippets = annotator.annotate()
         return self.snippets
 
-    def _generate_topic_set(self):
+    def _generate_adjagent_matrix(self):
         for _, snippet in self.snippets.iteritems():
             for page, _ in snippet.get('annotations').iteritems():
                 self.topic_set[page] += 1.
                 self.n_topic += 1.
                 self.pages.append(page)
 
-    def _generate_adjagent_matrix(self):
-        self._generate_topic_set()
-
         rel = zeros((len(self.topic_set), len(self.topic_set)))
         degree = zeros(len(self.topic_set))
+
+        # self.enumetated_topic_set = enumerate(self.topic_set)
 
         for i, topic1 in enumerate(self.topic_set):
             for j, topic2 in enumerate(self.topic_set):
@@ -44,6 +44,7 @@ class BaseClusterify(object):
                     degree[i] += rel_value
                     degree[j] += rel_value
 
+        self.rel_matrix = rel
         return rel, degree
 
     def _generate_cluster_from_ids(self, ids):
@@ -59,13 +60,30 @@ class BaseClusterify(object):
 
     def _generate_output_response(self, response):
         if not self.topic_set:
-            self._generate_topic_set()
+            self._generate_adjagent_matrix()
 
-        print self.topic_set
-        print response.values()
+        topic_indexer = dict((p, i) for i, p in enumerate(self.topic_set))
+
+        response_dict = []
+
+        for cluster in response.values():
+            tmp = {}
+            if len(cluster) == 1:
+                tmp[cluster[0]] = 1.
+            else:
+                for topic1 in cluster:
+                    for topic2 in cluster:
+                        if topic1 != topic2:
+                            if not topic1 in tmp:
+                                tmp[topic1] = 1.
+                            topic1_index = topic_indexer[topic1]
+                            topic2_index = topic_indexer[topic2]
+                            rel = self.rel_matrix[topic2_index][topic1_index]
+                            tmp[topic1] += rel / len(cluster)
+                response_dict.append(tmp)
 
         return {
-            'clusters': response.values()
+            'clusters': response_dict
         }
 
     def do_cluster(self):

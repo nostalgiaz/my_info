@@ -2,20 +2,21 @@
   var width = 960,
     height = 500,
     padding = 1.5, // separation between same-color circles
-    clusterPadding = 6, // separation between different-color circles
+    clusterPadding = 10, // separation between different-color circles
     maxRadius = 12;
 
 
   $.get(window.my_info.urls.cluster).done(function (data) {
+    $('#cluster').html('');
     var clusters = new Array(data.clusters.length);
     var d;
     var nodes = [];
 
     $.each(data.clusters, function (i, el) {
-      $.each(el, function (j, url) {
+      $.each(el, function (url, rel) {
         d = {
           cluster: i,
-          radius: 10,
+          radius: rel * 10,
           url: url
         };
         clusters[i] = d;
@@ -23,7 +24,7 @@
       })
     });
 
-    var color = d3.scale.category10().domain(d3.range(nodes.length));
+    var color = d3.scale.category20().domain(d3.range(nodes.length));
 
     var force = d3.layout.force()
       .nodes(nodes)

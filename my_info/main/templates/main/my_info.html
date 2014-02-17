@@ -6,7 +6,9 @@
     <title>my_info</title>
 </head>
 <body>
-    <div id="cluster"></div>
+    <h1>Hi {{ user.first_name }} <i>@{{ user}}</i> {{ user.last_name }}!</h1>
+
+    <div id="cluster">loading...</div>
 
     <script src="{% static "jquery/dist/jquery.js" %}"></script>
     <script>
