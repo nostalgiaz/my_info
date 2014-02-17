@@ -33,8 +33,6 @@ class BaseClusterify(object):
         rel = zeros((len(self.topic_set), len(self.topic_set)))
         degree = zeros(len(self.topic_set))
 
-        # self.enumetated_topic_set = enumerate(self.topic_set)
-
         for i, topic1 in enumerate(self.topic_set):
             for j, topic2 in enumerate(self.topic_set):
                 if j > i:
@@ -80,7 +78,11 @@ class BaseClusterify(object):
                             topic2_index = topic_indexer[topic2]
                             rel = self.rel_matrix[topic2_index][topic1_index]
                             tmp[topic1] += rel / len(cluster)
+
                 response_dict.append(tmp)
+
+        for k, v in response_dict[0].iteritems():
+            response_dict[0][k] = v ** 2
 
         return {
             'clusters': response_dict
