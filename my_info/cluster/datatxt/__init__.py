@@ -1,5 +1,6 @@
 from hashlib import sha1
 from dandelion import datatxt, DandelionException
+from my_info.cluster.cache import RedisCache
 from my_info.cluster.recon.interwikirecon import InterWikiRecon
 from my_info.settings import DATATXT_APP_ID, DATATXT_APP_KEY
 import requests
@@ -7,8 +8,9 @@ import requests
 
 class DataTXT(object):
     def __init__(self):
-        self._cache = {}
+        # self._cache = {}
         self.interWikiRecon = InterWikiRecon()
+        self.cache = RedisCache()
         self.datatxt = datatxt.DataTXT(
             app_id=DATATXT_APP_ID,
             app_key=DATATXT_APP_KEY,
@@ -22,7 +24,6 @@ class DataTXT(object):
             return {
                 'id': id,
                 'lang': annotated.lang,
-                #'text': args[0],
                 'annotations': {
                     a.uri: a.confidence for a in annotated.annotations
                 }
@@ -44,12 +45,13 @@ class DataTXT(object):
             return 0
 
     def rel(self, topic1, topic2, enable_cache=True):
-        key = "{}{}".format(topic1, topic2)
+        key_1 = "relatedness-{}{}".format(topic1, topic2)
+        key_2 = "relatedness-{}{}".format(topic2, topic1)
 
         lang1 = 'it' if '://it.' in topic1 else 'en'
         lang2 = 'it' if '://it.' in topic2 else 'en'
 
-        if enable_cache and key not in self._cache:
+        if enable_cache and not self.cache.has(key_1):
             if lang1 == lang2:
                 value = self._rel_request(lang1, topic1, topic2)
             else:
@@ -78,6 +80,7 @@ class DataTXT(object):
                 else:
                     value = 0
 
-            self._cache[key] = value
+            self.cache.set(key_1, value)
+            self.cache.set(key_2, value)
 
-        return self._cache[key]
+        return self.cache.get(key_1)
