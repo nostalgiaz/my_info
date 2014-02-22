@@ -3,7 +3,6 @@ import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-DEBUG_CACHE = False
 
 PROJECT_ROOT_BOWER = os.path.abspath(
     os.path.join(os.path.dirname(__file__), ".."),
@@ -98,6 +97,7 @@ STATICFILES_FINDERS = (
 BOWER_INSTALLED_APPS = (
     'jquery',
     'd3',
+    'underscore',
     'd3-tip',
 )
 
@@ -223,7 +223,8 @@ LOGGING = {
     }
 }
 
-NUMBER_OF_TWEETS = 50
+NUMBER_OF_TWEETS = 200
+PRINT_LOG = False
 
 try:
     from local_settings import *

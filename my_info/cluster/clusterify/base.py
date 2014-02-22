@@ -20,15 +20,18 @@ class BaseClusterify(object):
 
     def annotate(self):
         annotator = Annotator(self.reader.texts())
-        self.snippets = annotator.annotate()
-        return self.snippets
+        self.snippets, tweets = annotator.annotate()
+        return tweets
 
-    def _generate_adjagent_matrix(self):
+    def _generate_topic_set(self):
         for _, snippet in self.snippets.iteritems():
             for page, _ in snippet.get('annotations').iteritems():
                 self.topic_set[page] += 1.
                 self.n_topic += 1.
                 self.pages.append(page)
+
+    def _generate_adjagent_matrix(self):
+        self._generate_topic_set()
 
         rel = zeros((len(self.topic_set), len(self.topic_set)))
         degree = zeros(len(self.topic_set))
@@ -58,31 +61,17 @@ class BaseClusterify(object):
 
     def _generate_output_response(self, response):
         if not self.topic_set:
-            self._generate_adjagent_matrix()
-
-        topic_indexer = dict((p, i) for i, p in enumerate(self.topic_set))
+            self._generate_topic_set()
 
         response_dict = []
 
         for cluster in response.values():
+            if len(cluster) == 1:  # remove cluster with just 1 element
+                continue
             tmp = {}
-            if len(cluster) == 1:
-                tmp[cluster[0]] = 1.
-            else:
-                for topic1 in cluster:
-                    for topic2 in cluster:
-                        if topic1 != topic2:
-                            if not topic1 in tmp:
-                                tmp[topic1] = 1.
-                            topic1_index = topic_indexer[topic1]
-                            topic2_index = topic_indexer[topic2]
-                            rel = self.rel_matrix[topic2_index][topic1_index]
-                            tmp[topic1] += rel / len(cluster)
-
-                response_dict.append(tmp)
-
-        for k, v in response_dict[0].iteritems():
-            response_dict[0][k] = v ** 2
+            for topic in cluster:
+                tmp[topic] = self.topic_set[topic] ** .5
+            response_dict.append(tmp)
 
         return {
             'clusters': response_dict

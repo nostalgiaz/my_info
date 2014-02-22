@@ -1,22 +1,32 @@
 import requests
+from my_info.cluster.cache import RedisCache
 
 
 class InterWikiRecon(object):
     def __init__(self):
-        pass
+        self.cache = RedisCache()
 
-    @staticmethod
-    def get_inter_wikilinks(page):
-        url_recon = 'http://interwikirecon.spaziodati.eu/reconcile?queries={' \
-                    '"q0":{"query": "' + page + '"}}'
+    def get_inter_wikilinks(self, page):
+        key = "{}:interwikirecon".format(page)
+        if not self.cache.has(key):
+            url = 'http://interwikirecon.spaziodati.eu/reconcile?queries={' \
+                  '"q0":{"query": "' + page + '", "type": "Wikipedia %s"}}'
 
-        results = requests.get(url_recon).json()['q0']['result']
+            try:
+                en = requests.get(
+                    url.replace("%s", 'EN')).json()['q0']['result'][0]['id']
+            except IndexError:
+                en = None
 
-        response = {}
-        for result in results:
-            if 'EN' in result['type'][0]['name']:
-                response['en'] = result['id']
-            elif 'IT' in result['type'][0]['name']:
-                response['it'] = result['id']
+            try:
+                it = requests.get(
+                    url.replace("%s", 'IT')).json()['q0']['result'][0]['id']
+            except IndexError:
+                it = None
 
-        return response
+            self.cache.set(key, {
+                'en': en,
+                'it': it,
+            })
+
+        return self.cache.get(key)

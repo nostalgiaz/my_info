@@ -1,33 +1,35 @@
-from my_info.cluster.cache import RedisCache
+from collections import defaultdict
 from my_info.cluster.datatxt import DataTXT
-from my_info.settings import DEBUG_CACHE
 
 
 class Annotator(object):
     def __init__(self, texts):
-        self.cache_key = "{}:{}:annotator".format(
-            self.__class__.__name__,
-            texts
-        )
         self.texts = texts
-        self.cache = RedisCache()
         self.datatxt = DataTXT()
 
     def annotate(self):
-        if not self.cache.has(self.cache_key) or DEBUG_CACHE:
-            annotated_texts_tmp = [
-                self.datatxt.nex(text) for text in self.texts
-            ]
-            annotated_texts = {
-                x['id']: x for x in annotated_texts_tmp if x is not None
-            }
+        tweets = defaultdict(list)
 
-            for k, v in annotated_texts.iteritems():
-                del v['id']
+        annotated_texts_tmp = []
 
-            if DEBUG_CACHE:
-                return annotated_texts
+        for text in self.texts:
+            print text
+            annotation = self.datatxt.nex(text)
 
-            return self.cache.set(self.cache_key, annotated_texts)
+            if annotation is None:
+                continue
 
-        return self.cache.get(self.cache_key)
+            for topics, _ in annotation['annotations'].iteritems():
+                print "* " + topics
+                tweets[topics].append(text)
+
+            annotated_texts_tmp.append(annotation)
+
+        annotated_texts = {
+            x['id']: x for x in annotated_texts_tmp if x is not None
+        }
+
+        for k, v in annotated_texts.iteritems():
+            del v['id']
+
+        return annotated_texts, tweets

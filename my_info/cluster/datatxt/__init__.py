@@ -8,7 +8,6 @@ import requests
 
 class DataTXT(object):
     def __init__(self):
-        # self._cache = {}
         self.interWikiRecon = InterWikiRecon()
         self.cache = RedisCache()
         self.datatxt = datatxt.DataTXT(
@@ -18,7 +17,12 @@ class DataTXT(object):
 
     def nex(self, *args):
         try:
-            annotated = self.datatxt.nex(args[0], min_confidence=.6)
+            annotated = self.datatxt.nex(
+                args[0],
+                min_confidence=.6,
+                parse_hashtag=True,
+            )
+
             id = sha1(annotated.lang + str(annotated.annotations)).hexdigest()
 
             return {
@@ -40,13 +44,12 @@ class DataTXT(object):
                 'page1': topic1,
                 'page2': topic2,
             }).json()['relatedness']
-        except Exception:
-            # topic1 or topic2 doesn't exist
+        except Exception:  # topic1 or topic2 doesn't exist
             return 0
 
     def rel(self, topic1, topic2, enable_cache=True):
-        key_1 = "relatedness-{}{}".format(topic1, topic2)
-        key_2 = "relatedness-{}{}".format(topic2, topic1)
+        key_1 = "{}-{}:relatedness".format(topic1, topic2)
+        key_2 = "{}-{}:relatedness".format(topic2, topic1)
 
         lang1 = 'it' if '://it.' in topic1 else 'en'
         lang2 = 'it' if '://it.' in topic2 else 'en'

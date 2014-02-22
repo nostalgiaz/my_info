@@ -7,15 +7,37 @@
     <link rel="stylesheet" href="{% static "style/cluster.css" %}" />
 </head>
 <body>
-    <h1>Hi {{ user.first_name }} <i>@{{ user}}</i> {{ user.last_name }}!</h1>
+    {#    {{ user_id }}#}
+    {{ full_name }}
+    {{ nick }}
+    {{ bio }}
+    {{ image }}
+    {{ tweets_count }}
+    {{ followers_count }}
+    {{ following_count }}
+    {{ location }}
 
+    {#    <h1>Hi {{ user.first_name }} <i>@{{ user}}</i> {{ user.last_name }}!</h1>#}
+    {##}
     <div id="cluster">loading...</div>
+    {##}
+    <div id="tweets"></div>
+
+    <script id="tweet-template" type="text/template" class="template">
+        <ul>
+            <% _.each(tweets, function(el) { %>
+                <li><%= el %></li>
+            <% }) %>
+        </ul>
+    </script>
 
     <script src="{% static "jquery/dist/jquery.js" %}"></script>
+    <script src="{% static "underscore/underscore.js" %}"></script>
     <script>
         window.my_info = {
             urls: {
-                cluster: "{% url "cluster" %}"
+                cluster: "{% url "show_cluster" user_id %}",
+                tweets: "{% url "show_tweets" user_id %}"
             }
         };
     </script>

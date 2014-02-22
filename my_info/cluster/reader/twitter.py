@@ -1,10 +1,7 @@
 """
 TwitterReader
 """
-from django.conf import settings
-from django.contrib.auth.models import User
-from social.apps.django_app.default.models import UserSocialAuth
-from twython import Twython
+from my_info.cluster.helpers import get_twitter_from_username
 from my_info.cluster.reader.base import BaseReader
 from my_info.settings import NUMBER_OF_TWEETS
 
@@ -20,19 +17,10 @@ class TwitterReader(BaseReader):
         self.number_of_tweets = number_of_tweets
 
     def _texts(self):
-        user = UserSocialAuth.objects.filter(provider='twitter').get(
-            user=User.objects.get(username=self.username)
-        )
+        twitter = get_twitter_from_username(self.username)
 
-        twitter = Twython(
-            settings.SOCIAL_AUTH_TWITTER_KEY,
-            settings.SOCIAL_AUTH_TWITTER_SECRET,
-            user.tokens.get('oauth_token'),
-            user.tokens.get('oauth_token_secret'),
-        )
-
-        my_tweets = twitter.get_user_timeline(**{
+        my_wall = twitter.get_home_timeline(**{
             'count': self.number_of_tweets
         })
 
-        return [tweet.get('text') for tweet in my_tweets]
+        return [tweet.get('text') for tweet in my_wall]
