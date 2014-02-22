@@ -14,7 +14,7 @@ class Command(BaseCommand):
                   "<star|spectra|kmeans>"
             return
 
-        k = 5
+        k = 20
         pp = pprint.PrettyPrinter(indent=4)
         username = args[0]
         reader = TwitterReader(username)
