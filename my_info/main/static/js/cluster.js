@@ -6,16 +6,23 @@
     maxRadius = 12;
 
   $.get(window.my_info.urls.cluster).done(function (data) {
+    var clusters = new Array(data.clusters.length)
+      , nodes = []
+      , d
+      , tip
+      , color
+      , force
+      , svg
+      , circle
+      ;
+
     $('#cluster').html('');
-    var clusters = new Array(data.clusters.length);
-    var d;
-    var nodes = [];
 
     $.each(data.clusters, function (i, el) {
-      $.each(el, function (url, rel) {
+      $.each(el, function (url, size) {
         d = {
           cluster: i,
-          radius: rel * 10,
+          radius: size * 6,
           url: url
         };
         clusters[i] = d;
@@ -23,7 +30,7 @@
       })
     });
 
-    var tip = d3.tip()
+    tip = d3.tip()
       .attr('class', 'd3-tip')
       .html(function (d) {
         return decodeURIComponent(d.url.split("/").pop().replace(/_/g, " "));
@@ -31,9 +38,9 @@
       .direction('e')
       .offset([0, 3]);
 
-    var color = d3.scale.category20().domain(d3.range(nodes.length));
+    color = d3.scale.category20().domain(d3.range(nodes.length));
 
-    var force = d3.layout.force()
+    force = d3.layout.force()
       .nodes(nodes)
       .size([width, height])
       .gravity(.02)
@@ -41,12 +48,12 @@
       .on("tick", tick)
       .start();
 
-    var svg = d3.select("body").append("svg")
+    svg = d3.select("body").append("svg")
       .attr("width", width)
       .attr("height", height)
       .call(tip);
 
-    var circle = svg.selectAll("circle")
+    circle = svg.selectAll("circle")
       .data(nodes)
       .enter().append("circle")
       .attr("r", function (d) {
@@ -77,12 +84,15 @@
 // Move d to be adjacent to the cluster node.
     function cluster(alpha) {
       return function (d) {
-        var cluster = clusters[d.cluster];
+        var cluster = clusters[d.cluster]
+          , x, y, l, r;
+
         if (cluster === d) return;
-        var x = d.x - cluster.x,
-          y = d.y - cluster.y,
-          l = Math.sqrt(x * x + y * y),
-          r = d.radius + cluster.radius;
+        x = d.x - cluster.x;
+        y = d.y - cluster.y;
+        l = Math.sqrt(x * x + y * y);
+        r = d.radius + cluster.radius;
+
         if (l != r) {
           l = (l - r) / l * alpha;
           d.x -= x *= l;
@@ -96,18 +106,21 @@
 // Resolves collisions between d and all other circles.
     function collide(alpha) {
       var quadtree = d3.geom.quadtree(nodes);
+      var r, nx1, nx2, ny1, ny2, x, y, l, r;
       return function (d) {
-        var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
-          nx1 = d.x - r,
-          nx2 = d.x + r,
-          ny1 = d.y - r,
-          ny2 = d.y + r;
+        r = d.radius + maxRadius + Math.max(padding, clusterPadding);
+        nx1 = d.x - r;
+        nx2 = d.x + r;
+        ny1 = d.y - r;
+        ny2 = d.y + r;
+
         quadtree.visit(function (quad, x1, y1, x2, y2) {
           if (quad.point && (quad.point !== d)) {
-            var x = d.x - quad.point.x,
-              y = d.y - quad.point.y,
-              l = Math.sqrt(x * x + y * y),
-              r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+            x = d.x - quad.point.x;
+            y = d.y - quad.point.y;
+            l = Math.sqrt(x * x + y * y);
+            r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+            
             if (l < r) {
               l = (l - r) / l * alpha;
               d.x -= x *= l;
