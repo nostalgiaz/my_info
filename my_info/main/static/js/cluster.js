@@ -1,11 +1,10 @@
 (function () {
-  var width = 960
-    , height = 500
+  var width = $('#cluster').width()
+    , height = $(document).height()
     , padding = 1.5 // separation between same-color circles
     , clusterPadding = 10 // separation between different-color circles
     , maxRadius = 12
     ;
-
 
   $.get(window.my_info.urls.cluster).done(function (data) {
     var clusters = new Array(data.clusters.length)
@@ -58,7 +57,7 @@
       .on("tick", tick)
       .start();
 
-    svg = d3.select("body").append("svg")
+    svg = d3.select("#cluster").append("svg")
       .attr("width", width)
       .attr("height", height)
       .call(tip);

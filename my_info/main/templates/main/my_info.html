@@ -1,27 +1,58 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>my_info</title>
-    <link rel="stylesheet" href="{% static "style/cluster.css" %}" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{{ nick }}'s tweets | my_info</title>
+    <link rel="stylesheet" href="{% static "stylesheets/style.css" %}" />
 </head>
 <body>
-    {#    {{ user_id }}#}
-    {{ full_name }}
-    {{ nick }}
-    {{ bio }}
-    {{ image }}
-    {{ tweets_count }}
-    {{ followers_count }}
-    {{ following_count }}
-    {{ location }}
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">My Info</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div id="profile-info">
+                <img src="{{ image }}" alt="{{ nick }}" />
+                <h1>{{ full_name }}</h1>
+                <h1><small>@{{ nick }}</small></h1>
+
+                <p>{{ bio }}</p>
+
+                <table class="table">
+                     <tr>
+                        <td>{{ tweets_count }}</td>
+                        <td>{{ following_count }}</td>
+                        <td>{{ followers_count }}</td>
+                    </tr>
+                </table>
+
+{#                {{ location }}#}
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div id="cluster">loading...</div>
+        </div>
+        <div class="col-md-4">
+            <h2>Filtered tweets</h2>
+            <div id="tweets"></div>
+        </div>
+    </div>
+
 
     {#    <h1>Hi {{ user.first_name }} <i>@{{ user}}</i> {{ user.last_name }}!</h1>#}
     {##}
-    <div id="cluster">loading...</div>
     {##}
-    <div id="tweets"></div>
 
     <script id="tweet-template" type="text/template" class="template">
         <ul>

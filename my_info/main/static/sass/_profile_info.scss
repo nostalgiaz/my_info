@@ -1,0 +1,14 @@
+@import "compass";
+
+#profile-info {
+  padding: 20px 5px;
+  text-align: center;
+
+  img {
+    @include border-radius(100%);
+  }
+
+  h1 + h1 {
+    margin-top: -20px;
+  }
+}
