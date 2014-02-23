@@ -19,17 +19,16 @@ class DataTXT(object):
         try:
             annotated = self.datatxt.nex(
                 args[0],
-                min_confidence=.6,
+                min_confidence=.7,
                 parse_hashtag=True,
             )
-
             id = sha1(annotated.lang + str(annotated.annotations)).hexdigest()
 
             return {
                 'id': id,
                 'lang': annotated.lang,
                 'annotations': {
-                    a.uri: a.confidence for a in annotated.annotations
+                    a.uri: a for a in annotated.annotations
                 }
             }
         except DandelionException:

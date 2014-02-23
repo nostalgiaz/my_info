@@ -13,6 +13,7 @@ from my_info.cluster.clusterify.starclusterify import StarClusterify
 
 from my_info.cluster.helpers import get_twitter_from_username
 from my_info.cluster.reader import TwitterReader
+from my_info.settings import NUMBER_OF_TWEETS
 
 
 def home(request):
@@ -47,7 +48,11 @@ def create_info_page(request):
     ###########################################################################
     # CLUSTER & TWEETS
     ###########################################################################
-    clusterify = SpectralClusterify(TwitterReader(username), 20)
+    k = 20
+    if NUMBER_OF_TWEETS < 20:  # debug
+        k = 10
+
+    clusterify = SpectralClusterify(TwitterReader(username), k)
     redis.set("{}:tweets".format(user_id), clusterify.annotate())
     redis.set("{}:cluster".format(user_id), clusterify.do_cluster())
 
@@ -76,7 +81,4 @@ def show_tweets(request, user_id):
     redis = RedisCache()
     topics = request.GET.get('topics')
     tweet_list = redis.get('{}:tweets'.format(user_id))
-    tweets = [v for k, v in tweet_list.iteritems() if k in topics]
-
-
-    return tweets
+    return [v for k, v in tweet_list.iteritems() if k in topics]

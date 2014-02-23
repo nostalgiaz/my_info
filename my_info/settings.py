@@ -95,6 +95,7 @@ STATICFILES_FINDERS = (
 )
 
 BOWER_INSTALLED_APPS = (
+    'modernizr',
     'jquery',
     'd3',
     'underscore',

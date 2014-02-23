@@ -13,48 +13,45 @@
     <link rel="stylesheet" href="{% static "stylesheets/style.css" %}" />
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">My Info</a>
+    <div class="tweet-and-cluster">
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">My Info</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div id="profile-info">
+                    <img src="{{ image }}" alt="{{ nick }}" />
+                    <h1>{{ full_name }}</h1>
+                    <h1><small>@{{ nick }}</small></h1>
+
+                    <p>{{ bio }}</p>
+
+                    <table class="table">
+                         <tr>
+                            <td>{{ tweets_count }}</td>
+                            <td>{{ following_count }}</td>
+                            <td>{{ followers_count }}</td>
+                        </tr>
+                    </table>
+
+    {#                {{ location }}#}
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div id="cluster">loading...</div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3">
-            <div id="profile-info">
-                <img src="{{ image }}" alt="{{ nick }}" />
-                <h1>{{ full_name }}</h1>
-                <h1><small>@{{ nick }}</small></h1>
 
-                <p>{{ bio }}</p>
-
-                <table class="table">
-                     <tr>
-                        <td>{{ tweets_count }}</td>
-                        <td>{{ following_count }}</td>
-                        <td>{{ followers_count }}</td>
-                    </tr>
-                </table>
-
-{#                {{ location }}#}
-            </div>
-        </div>
-        <div class="col-md-5">
-            <div id="cluster">loading...</div>
-        </div>
-        <div class="col-md-4">
-            <h2>Filtered tweets</h2>
-            <div id="tweets"></div>
-        </div>
+    <div id="tweets" class="overlay overlay-contentscale">
     </div>
-
-
-    {#    <h1>Hi {{ user.first_name }} <i>@{{ user}}</i> {{ user.last_name }}!</h1>#}
-    {##}
-    {##}
 
     <script id="tweet-template" type="text/template" class="template">
+        <button type="button" class="overlay-close">Close</button>
         <ul>
             <% _.each(tweets, function(el) { %>
                 <li><%= el %></li>
@@ -62,6 +59,7 @@
         </ul>
     </script>
 
+    <script src="{% static "modernizr/modernizr.js" %}"></script>
     <script src="{% static "jquery/dist/jquery.js" %}"></script>
     <script src="{% static "underscore/underscore.js" %}"></script>
     <script>
@@ -74,6 +72,7 @@
     </script>
     <script src="{% static "d3/d3.js" %}"></script>
     <script src="{% static "d3-tip/index.js" %}"></script>
+    <script src="{% static "js/tweets.js" %}"></script>
     <script src="{% static "js/cluster.js" %}"></script>
 </body>
 </html>

@@ -66,8 +66,6 @@ class BaseClusterify(object):
         response_dict = []
 
         for cluster in response.values():
-            if len(cluster) == 1:  # remove cluster with just 1 element
-                continue
             tmp = {}
             for topic in cluster:
                 tmp[topic] = self.topic_set[topic] ** .5
