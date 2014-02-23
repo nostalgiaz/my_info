@@ -10,7 +10,7 @@
 .overlay .overlay-close {
   width: 80px;
   height: 80px;
-  position: absolute;
+  position: fixed;
   right: 20px;
   top: 20px;
   overflow: hidden;
@@ -23,6 +23,8 @@
 }
 
 .tweet-and-cluster {
+  position: fixed;
+  overflow: hidden;
   -webkit-transition: -webkit-transform 0.5s;
   transition: transform 0.5s;
 }
@@ -46,4 +48,26 @@
   transform: translateY(0%);
   -webkit-transition: -webkit-transform 0.5s;
   transition: transform 0.5s;
+}
+
+.overlay {
+  overflow: auto;
+
+  ul {
+    width: 600px;
+    margin: 50px auto;
+    font-size: 20px;
+    list-style: none;
+    padding: 0;
+    color: white;
+
+    li {
+      margin-bottom: 20px;
+
+      .annotated-entity {
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        padding: 2px;
+      }
+    }
+  }
 }

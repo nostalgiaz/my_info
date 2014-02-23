@@ -21,7 +21,7 @@
 
     $.each(data.clusters, function (i, el) {
       $.each(el, function (url, size) {
-        var r = size * 6
+        var r = size * 10
           , d = {
             cluster: i,
             radius: r,
