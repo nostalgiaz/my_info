@@ -13,14 +13,12 @@ class Annotator(object):
         annotated_texts_tmp = []
 
         for text in self.texts:
-            print text
             annotation = self.datatxt.nex(text)
 
             if annotation is None:
                 continue
 
             for topics, _ in annotation['annotations'].iteritems():
-                print "* " + topics
                 tweets[topics].append(text)
 
             annotated_texts_tmp.append(annotation)
