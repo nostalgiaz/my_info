@@ -27,6 +27,6 @@ class TwitterReader(BaseReader):
 
         return [(
             tweet.get('text'),
-            url.format(
-                tweet.get('user').get('screen_name'), tweet.get('id_str'))
+            url.format(tweet.get('user').get('screen_name'),
+                       tweet.get('id_str'))
         ) for tweet in my_wall]
