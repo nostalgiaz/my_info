@@ -6,6 +6,7 @@
 
   img {
     @include border-radius(100%);
+    width: 100%;
   }
 
   h1 + h1 {

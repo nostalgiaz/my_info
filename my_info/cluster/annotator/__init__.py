@@ -3,8 +3,9 @@ from my_info.cluster.datatxt import DataTXT
 
 
 class Annotator(object):
-    def __init__(self, texts):
-        self.texts = texts
+    def __init__(self, items):
+        self.texts = [x[0] for x in items]
+        self.urls = [x[1] for x in items]
         self.datatxt = DataTXT()
 
     def annotate(self):
@@ -16,7 +17,7 @@ class Annotator(object):
         end = '</span>'
         end_len = len(end)
 
-        for text in self.texts:
+        for i, text in enumerate(self.texts):
             annotation = self.datatxt.nex(text)
             shift = 0
 
@@ -43,7 +44,10 @@ class Annotator(object):
                 shift += start_len + end_len
 
             for topics, _ in sortered_annotations:
-                tweets[topics].append(text)
+                tweets[topics].append({
+                    'text': text,
+                    'url': self.urls[i],
+                })
 
             annotated_texts_tmp.append(annotation)
 

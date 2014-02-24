@@ -17,10 +17,16 @@ class TwitterReader(BaseReader):
         self.number_of_tweets = number_of_tweets
 
     def _texts(self):
+        url = "https://twitter.com/{}/status/{}"
+
         twitter = get_twitter_from_username(self.username)
 
         my_wall = twitter.get_home_timeline(**{
             'count': self.number_of_tweets
         })
 
-        return [tweet.get('text') for tweet in my_wall]
+        return [(
+            tweet.get('text'),
+            url.format(
+                tweet.get('user').get('screen_name'), tweet.get('id_str'))
+        ) for tweet in my_wall]

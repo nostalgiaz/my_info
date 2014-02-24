@@ -27,6 +27,8 @@
   overflow: hidden;
   -webkit-transition: -webkit-transform 0.5s;
   transition: transform 0.5s;
+  width: 100%;
+  height: 100%;
 }
 
 .tweet-and-cluster.overlay-open {
@@ -52,6 +54,7 @@
 
 .overlay {
   overflow: auto;
+  $hover_color: darken(white, 5%);
 
   ul {
     width: 600px;
@@ -59,10 +62,26 @@
     font-size: 20px;
     list-style: none;
     padding: 0;
-    color: white;
+    font-family: $font-sans;
+    font-weight: 200;
 
     li {
       margin-bottom: 20px;
+      border-left: 1px solid transparent;
+      padding: 0 10px;
+
+      &:hover, &:active {
+        border-left: 1px solid $hover_color;
+      }
+
+      a {
+        color: white;
+
+        &:hover, &:active {
+          color: $hover_color;
+          text-decoration: none;
+        }
+      }
 
       .annotated-entity {
         border: 1px solid rgba(255, 255, 255, 0.5);

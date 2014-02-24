@@ -189,6 +189,7 @@
       $.get(window.my_info.urls.tweets, {'topics': JSON.stringify(topics)}).done(function (data) {
         var tmpl = $("#tweet-template").html();
         $('#tweets').html(_.template(tmpl, {'tweets': data}));
+        console.log(data)
         toggleOverlay();
         $('.overlay-close').on('click', toggleOverlay);
       });
