@@ -8,7 +8,22 @@ class Annotator(object):
         self.urls = [x[1] for x in items]
         self.datatxt = DataTXT()
 
-    def annotate(self):
+    def annotate(self, test=False):
+        """
+        >>> a = Annotator([('mozilla funziona peggio di google chrome', '')])
+        >>> a.annotate(test=True)
+        [u'http://it.wikipedia.org/wiki/Mozilla', \
+u'http://it.wikipedia.org/wiki/Google_Chrome']
+        >>> a = Annotator([('@mozilla funziona peggio di google chrome', '')])
+        >>> a.annotate(test=True)
+        [u'http://it.wikipedia.org/wiki/Google_Chrome']
+        >>> a = Annotator([('mozilla funziona peggio di @google_chrome', '')])
+        >>> a.annotate(test=True)
+        [u'http://it.wikipedia.org/wiki/Mozilla']
+        >>> a = Annotator([('@mozilla funziona peggio di @google_chrome', '')])
+        >>> a.annotate(test=True)
+        []
+        """
         tweets = defaultdict(list)
 
         annotated_texts_tmp = []
@@ -18,7 +33,15 @@ class Annotator(object):
         end_len = len(end)
 
         for i, text in enumerate(self.texts):
-            annotation = self.datatxt.nex(text)
+
+            text_ann = []
+            for x in text.split():
+                if x.startswith('@'):
+                    x = "_" * len(x)
+                text_ann.append(x)
+
+            text_ann = " ".join(text_ann)
+            annotation = self.datatxt.nex(text_ann)
             shift = 0
 
             if annotation is None:
@@ -57,5 +80,8 @@ class Annotator(object):
 
         for k, v in annotated_texts.iteritems():
             del v['id']
+
+        if test:
+            return annotated_texts.values()[0]['annotations'].keys()
 
         return annotated_texts, tweets
