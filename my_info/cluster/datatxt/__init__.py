@@ -47,13 +47,14 @@ class DataTXT(object):
             return 0
 
     def rel(self, topic1, topic2, enable_cache=True):
-        key_1 = "{}-{}:relatedness".format(topic1, topic2)
-        key_2 = "{}-{}:relatedness".format(topic2, topic1)
+        topics = sorted([topic1, topic2])
+        topic1, topic2 = topics[0], topics[1]
+        cache_key = "{}-{}:relatedness".format(topic1, topic2)
 
         lang1 = 'it' if '://it.' in topic1 else 'en'
         lang2 = 'it' if '://it.' in topic2 else 'en'
 
-        if enable_cache and not self.cache.has(key_1):
+        if enable_cache and not self.cache.has(cache_key):
             if lang1 == lang2:
                 value = self._rel_request(lang1, topic1, topic2)
             else:
@@ -82,7 +83,6 @@ class DataTXT(object):
                 else:
                     value = 0
 
-            self.cache.set(key_1, value)
-            self.cache.set(key_2, value)
+            self.cache.set(cache_key, value)
 
-        return self.cache.get(key_1)
+        return self.cache.get(cache_key)
