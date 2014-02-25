@@ -57,6 +57,10 @@
         <ul>
             <% _.each(tweets, function(el) { %>
                 <li><a href="<%= el.url %>" target="_blank"><%= el.text %></a></li>
+                <img src="<%= el.user.profile_image_url_https %>">
+                <%= el.user.name %>
+                <%= el.user.screen_name %>
+                <br>
             <% }) %>
         </ul>
     </script>

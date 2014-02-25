@@ -196,7 +196,8 @@
           var el = ell[0]
             , tweet = {
               'url': el.url,
-              'text': el.text
+              'text': el.text,
+              'user': el.user
             }
             , text = el.text
             , sortedList = el.annotations.sort(function (a, b) {

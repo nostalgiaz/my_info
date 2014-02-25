@@ -81,5 +81,4 @@ def show_tweets(request, user_id):
     redis = RedisCache()
     topics = request.GET.get('topics')
     tweet_list = redis.get('{}:tweets'.format(user_id))
-    # remove duplicates
     return [v for k, v in tweet_list.iteritems() if k in topics]

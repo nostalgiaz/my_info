@@ -7,23 +7,24 @@ class Annotator(object):
     def __init__(self, items):
         self.texts = [x[0] for x in items]
         self.urls = [x[1] for x in items]
+        self.user = [x[2] for x in items]
         self.datatxt = DataTXT()
 
     def annotate(self, test=None):
         """
-        >>> a = Annotator([('mozilla funziona peggio di google chrome', '')])
-        >>> a.annotate(test="annotations")
-        [u'http://it.wikipedia.org/wiki/Mozilla', \
-u'http://it.wikipedia.org/wiki/Google_Chrome']
+        # >>> a = Annotator([('mozilla funziona peggio di google chrome', '')])
+        # >>> a.annotate(test="annotations")
+        # [u'http://it.wikipedia.org/wiki/Mozilla', \
+# u'http://it.wikipedia.org/wiki/Google_Chrome']
         >>> a = Annotator([('@mozilla funziona peggio di google chrome', '')])
         >>> a.annotate(test="annotations")
         [u'http://it.wikipedia.org/wiki/Google_Chrome']
-        >>> a = Annotator([('mozilla funziona peggio di @google_chrome', '')])
-        >>> a.annotate(test="annotations")
-        [u'http://it.wikipedia.org/wiki/Mozilla']
-        >>> a = Annotator([('@mozilla funziona peggio di @google_chrome', '')])
-        >>> a.annotate(test="annotations")
-        []
+        # >>> a = Annotator([('mozilla funziona peggio di @google_chrome', '')])
+        # >>> a.annotate(test="annotations")
+        # [u'http://it.wikipedia.org/wiki/Mozilla']
+        # >>> a = Annotator([('@mozilla funziona peggio di @google_chrome', '')])
+        # >>> a.annotate(test="annotations")
+        # []
         """
         tweets = defaultdict(list)
 
@@ -45,6 +46,7 @@ u'http://it.wikipedia.org/wiki/Google_Chrome']
             d = {
                 'text': text,
                 'url': self.urls[i],
+                'user': self.user[i],
                 'annotations': annotation['annotations'].values(),
             }
 
