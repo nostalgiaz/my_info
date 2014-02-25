@@ -187,9 +187,48 @@
         topics.push(cluster[i].url);
 
       $.get(window.my_info.urls.tweets, {'topics': JSON.stringify(topics)}).done(function (data) {
-        var tmpl = $("#tweet-template").html();
-        $('#tweets').html(_.template(tmpl, {'tweets': data}));
-        console.log(data)
+        var tmplTweets = $("#tweets-template").html()
+          , tmplTweet = '<%= prev %><%= current %><%= next %>'
+          , tmplCurrent = '<span class="annotated-entity"><%= spot %></span>'
+          , tweets = [];
+
+        $.each(data, function (i, ell) {
+          var el = ell[0]
+            , tweet = {
+              'url': el.url,
+              'text': el.text
+            }
+            , text = el.text
+            , sortedList = el.annotations.sort(function (a, b) {
+              return a['start'] - b['start']
+            })
+            , offset = 0
+            , current
+            , start
+            , end
+            , item;
+
+          for (var j in sortedList) {
+            item = sortedList[j];
+            start = item['start'];
+            end = item['end'];
+            current = _.template(tmplCurrent, {
+              'spot': item['spot']
+            });
+
+            text = _.template(tmplTweet, {
+              'prev': text.substr(0, start + offset),
+              'current': current,
+              'next': text.substr(end + offset)
+            });
+            offset += current.length - (end - start);
+          }
+
+          tweet['text'] = text;
+          tweets.push(tweet);
+        });
+
+        $('#tweets').html(_.template(tmplTweets, {'tweets': tweets}));
         toggleOverlay();
         $('.overlay-close').on('click', toggleOverlay);
       });

@@ -52,11 +52,11 @@
     <div id="tweets" class="overlay overlay-contentscale">
     </div>
 
-    <script id="tweet-template" type="text/template" class="template">
+    <script id="tweets-template" type="text/template" class="template">
         <button type="button" class="overlay-close">Close</button>
         <ul>
             <% _.each(tweets, function(el) { %>
-                <li><a href="<%= el[0].url %>" target="_blank"><%= el[0].text %></a></li>
+                <li><a href="<%= el.url %>" target="_blank"><%= el.text %></a></li>
             <% }) %>
         </ul>
     </script>
