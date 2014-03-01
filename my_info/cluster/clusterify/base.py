@@ -1,9 +1,12 @@
 from collections import defaultdict
 from numpy import zeros
 from numpy.random import seed
+from celery.utils.log import get_task_logger
 
 from my_info.cluster.annotator import Annotator
 from my_info.cluster.datatxt import DataTXT
+
+logger = get_task_logger(__name__)
 
 
 class BaseClusterify(object):
@@ -24,6 +27,8 @@ class BaseClusterify(object):
         return tweets
 
     def _generate_topic_set(self):
+        logger.info("snippet set")
+        logger.info(self.snippets)
         for _, snippet in self.snippets.iteritems():
             for page, _ in snippet.get('annotations').iteritems():
                 self.topic_set[page] += 1.
@@ -32,6 +37,9 @@ class BaseClusterify(object):
 
     def _generate_adjagent_matrix(self):
         self._generate_topic_set()
+
+        logger.info("topic set")
+        logger.info(self.topic_set)
 
         rel = zeros((len(self.topic_set), len(self.topic_set)))
         degree = zeros(len(self.topic_set))
@@ -46,6 +54,9 @@ class BaseClusterify(object):
                     degree[j] += rel_value
 
         self.rel_matrix = rel
+
+        logger.info("rel")
+        logger.info(rel)
         return rel, degree
 
     def _generate_cluster_from_ids(self, ids):

@@ -1,6 +1,9 @@
 # coding=utf-8
 from collections import defaultdict
+from celery.utils.log import get_task_logger
 from my_info.cluster.datatxt import DataTXT
+
+logger = get_task_logger(__name__)
 
 
 class Annotator(object):
@@ -16,8 +19,8 @@ class Annotator(object):
         # >>> a.annotate(test="annotations")
         # [u'http://it.wikipedia.org/wiki/Mozilla', \
 # u'http://it.wikipedia.org/wiki/Google_Chrome']
-        >>> a = Annotator([('@mozilla funziona peggio di google chrome', '')])
-        >>> a.annotate(test="annotations")
+        # >>> a = Annotator([('@mozilla funziona peggio di google chrome', '')])
+        # >>> a.annotate(test="annotations")
         [u'http://it.wikipedia.org/wiki/Google_Chrome']
         # >>> a = Annotator([('mozilla funziona peggio di @google_chrome', '')])
         # >>> a.annotate(test="annotations")

@@ -13,8 +13,34 @@ def home(request):
 
 @login_required()
 def create_info_page(request):
-    #create_info_page_task.delay(request.user.username)
-    return render(request, "main/post_create_info_page.html")
+    from hashlib import sha1
+    from datetime import datetime
+
+    redis = RedisCache()
+    username = request.user.username
+    user_id = sha1(username + str(datetime.now())).hexdigest()
+
+    redis.set('{}:step'.format(user_id), 0)
+
+    create_info_page_task.delay(username, user_id)
+
+    return render(request, "main/post_create_info_page.html", {
+        'user_id': user_id
+    })
+
+
+@ajax()
+def get_process_status(request, user_id):
+    """ step:
+        0: get personal information from twitter
+        1: get tweets from twitter
+        2: annotation using dataTxt
+        3: clustering
+    """
+    redis = RedisCache()
+    return {
+        'step': redis.get('{}:step'.format(user_id)),
+    }
 
 
 def show_info_page(request, user_id):

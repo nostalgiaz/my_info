@@ -1,9 +1,12 @@
 from hashlib import sha1
+from celery.utils.log import get_task_logger
 from dandelion import datatxt, DandelionException
 from my_info.cluster.cache import RedisCache
 from my_info.cluster.recon.interwikirecon import InterWikiRecon
 from my_info.settings import DATATXT_APP_ID, DATATXT_APP_KEY
 import requests
+
+logger = get_task_logger(__name__)
 
 
 class DataTXT(object):
@@ -32,7 +35,7 @@ class DataTXT(object):
                 }
             }
         except DandelionException:
-            pass
+            logger.info("dandelion exception")
 
     @staticmethod
     def _rel_request(lang, topic1, topic2):

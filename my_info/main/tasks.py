@@ -1,6 +1,4 @@
 from __future__ import absolute_import
-import datetime
-from hashlib import sha1
 
 from my_info.cluster.cache import RedisCache
 from my_info.cluster.clusterify.spectralclusterify import SpectralClusterify
@@ -12,11 +10,8 @@ from my_info.settings import NUMBER_OF_TWEETS
 
 
 @app.task
-def create_info_page_task(username):
+def create_info_page_task(username, user_id):
     redis = RedisCache()
-    # username = request.user.username
-    user_id = sha1(username + str(datetime.now())).hexdigest()
-
     twitter = get_twitter_from_username(username)
     info = twitter.show_user(screen_name=username)
 
@@ -44,7 +39,12 @@ def create_info_page_task(username):
         k = 10
 
     clusterify = SpectralClusterify(TwitterReader(username), k)
-    redis.set("{}:tweets".format(user_id), clusterify.annotate())
-    redis.set("{}:cluster".format(user_id), clusterify.do_cluster())
+    redis.set('{}:step'.format(user_id), 1)
 
-    return user_id
+    redis.set("{}:tweets".format(user_id), clusterify.annotate())
+    redis.set('{}:step'.format(user_id), 2)
+
+    redis.set("{}:cluster".format(user_id), clusterify.do_cluster())
+    redis.set('{}:step'.format(user_id), 3)
+
+    redis.set('{}:step'.format(user_id), 4)  # exit code

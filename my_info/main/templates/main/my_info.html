@@ -4,11 +4,6 @@
 
 {% block title %}{{ nick }}'s tweets{% endblock %}
 
-{% block extra_style %}
-    <link rel="stylesheet" href="{% static "stylesheets/style.css" %}" />
-{% endblock %}
-
-
 {% block content %}
     <div class="tweet-and-cluster">
 {#        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">#}
@@ -63,8 +58,6 @@
 {% endblock %}
 
 {% block extra_script %}
-    <script src="{% static "modernizr/modernizr.js" %}"></script>
-    <script src="{% static "underscore/underscore.js" %}"></script>
     <script>
         window.my_info = {
             urls: {

@@ -1,21 +1,64 @@
 {% extends "main/__site_base.html" %}
 
-{#<a href="{% url "show_info_page" user_id %}">{{ user_id }}</a>#}
 
 {% block content %}
-    <div id="create-info-page-log"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">personal data</div>
+            <div class="col-md-3">tweets</div>
+            <div class="col-md-3">annotating</div>
+            <div class="col-md-3">clustering</div>
+        </div>
+
+        <div id="create-info-page-log" class="row">
+
+        </div>
+        <div class="row">
+            <div id="show-response" class="col-md-6 col-md-offset-3 hidden">
+                <a href="{% url "show_info_page" user_id %}" class="btn btn-block btn-danger">Checkout your data!</a>
+            </div>
+        </div>
+    </div>
+
+    <script id="status-template" type="text/template" class="template">
+        <% _.each(status, function(value) { %>
+            <div class="col-md-3"><%= value %></div>
+        <% }) %>
+    </script>
 {% endblock %}
 
 {% block extra_script %}
     <script>
-        function poll() {
-            $.get("ajax.php", function (data) {
-                //do stuff
-            });
-        }
+        (function () {
+            var tmplStatus = tmplTweets = $("#status-template").html()
+                , end = false
+                , status = []
+                , maxStatus = 4;
 
-        setInterval(function () {
-            poll();
-        }, 1000);
+            function poll() {
+                if (!end) {
+                    $.get("{% url "get_process_status" user_id %}", function (data) {
+                        if(data.step == maxStatus) {
+                            end = true;
+                            $('#show-response').removeClass('hidden');
+                        }
+
+                        for(var i=0; i<maxStatus; i++) {
+                            if (i <= data.step)
+                                status[i] = "done";
+                            else if (i == data.step + 1)
+                                status[i] = "running";
+                            else status[i] = "waiting";
+                        }
+
+                        $('#create-info-page-log').html(_.template(tmplStatus, {'status': status}));
+                    });
+                }
+            }
+
+            setInterval(function () {
+                poll();
+            }, 1000);
+        })();
     </script>
 {% endblock %}
