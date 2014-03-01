@@ -1,19 +1,15 @@
+{% extends "main/__site_base.html" %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+{% block title %}{{ nick }}'s tweets{% endblock %}
 
-    <title>{{ nick }}'s tweets | my_info</title>
-    <link href='http://fonts.googleapis.com/css?family=Raleway:400,200' rel='stylesheet' type='text/css'>
+{% block extra_style %}
     <link rel="stylesheet" href="{% static "stylesheets/style.css" %}" />
-</head>
-<body>
+{% endblock %}
+
+
+{% block content %}
     <div class="tweet-and-cluster">
 {#        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">#}
 {#            <div class="container">#}
@@ -64,9 +60,10 @@
             <% }) %>
         </ul>
     </script>
+{% endblock %}
 
+{% block extra_script %}
     <script src="{% static "modernizr/modernizr.js" %}"></script>
-    <script src="{% static "jquery/dist/jquery.js" %}"></script>
     <script src="{% static "underscore/underscore.js" %}"></script>
     <script>
         window.my_info = {
@@ -80,5 +77,4 @@
     <script src="{% static "d3-tip/index.js" %}"></script>
     <script src="{% static "js/tweets.js" %}"></script>
     <script src="{% static "js/cluster.js" %}"></script>
-</body>
-</html>
+{% endblock %}

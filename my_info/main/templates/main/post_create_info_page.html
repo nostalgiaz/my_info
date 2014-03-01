@@ -1,1 +1,21 @@
-<a href="{% url "show_info_page" user_id %}">{{ user_id }}</a>
+{% extends "main/__site_base.html" %}
+
+{#<a href="{% url "show_info_page" user_id %}">{{ user_id }}</a>#}
+
+{% block content %}
+    <div id="create-info-page-log"></div>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        function poll() {
+            $.get("ajax.php", function (data) {
+                //do stuff
+            });
+        }
+
+        setInterval(function () {
+            poll();
+        }, 1000);
+    </script>
+{% endblock %}

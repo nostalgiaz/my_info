@@ -13,7 +13,6 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 ADMINS = (
     ('Mattia Larentis', 'mattia@larentis.eu'),
-    # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -91,7 +90,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 BOWER_INSTALLED_APPS = (
@@ -153,6 +151,10 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = BROKER_URL
+
+
 INSTALLED_APPS = (
     'coffin',
 
@@ -160,6 +162,7 @@ INSTALLED_APPS = (
     'my_info.cluster',
     'social.apps.django_app.default',
 
+    'djcelery',
     'djangobower',
     'django_extensions',
 
