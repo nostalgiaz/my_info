@@ -1,5 +1,6 @@
 (function () {
-  var width = $('#cluster').width()
+  var $cluster = $('#cluster')
+    , width = $cluster.width()
     , height = $(document).height()
     , padding = 1.5 // separation between same-color circles
     , clusterPadding = 10 // separation between different-color circles
@@ -17,7 +18,7 @@
       , circle
       ;
 
-    $('#cluster').html('');
+    $cluster.html('');
 
     $.each(data.clusters, function (i, el) {
       $.each(el, function (url, size) {
@@ -76,7 +77,7 @@
       })
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
-      .on('mouseup', showTweets)
+      .on('click', showTweets)
       .call(force.drag);
 
     function tick(e) {
@@ -179,6 +180,14 @@
       }
     }
 
+    function hexToRgb(hex) {
+      var color = parseInt(hex.slice(1), 16)
+        , r = (color >> 16) & 255
+        , g = (color >> 8) & 255
+        , b = color & 255;
+      return r + "," + g + "," + b;
+    }
+
     function showTweets(d) {
       var cluster = clusterNodes[d.cluster]
         , topics = [];
@@ -231,6 +240,7 @@
 
         $('#tweets').html(_.template(tmplTweets, {'tweets': tweets}));
         toggleOverlay();
+        $('.overlay').css('background', "rgba(" + hexToRgb(color(d.cluster)) + ", .9)");
         $('.overlay-close').on('click', toggleOverlay);
       });
     }
