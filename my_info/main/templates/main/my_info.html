@@ -51,11 +51,14 @@
         <button type="button" class="overlay-close">Close</button>
         <ul>
             <% _.each(tweets, function(el) { %>
-                <li><a href="<%= el.url %>" target="_blank"><%= el.text %></a></li>
-                <img src="<%= el.user.profile_image_url_https %>">
-                <%= el.user.name %>
-                <%= el.user.screen_name %>
-                <br>
+                <li>
+                    <div class="tweets-user-profile">
+                        <img src="<%= el.user.profile_image_url_https %>" alt="<%= el.user.screen_name %>">
+                        <%= el.user.name %>
+                        <%= el.user.screen_name %>
+                    </div>
+                    <a href="<%= el.url %>" target="_blank"><%= el.text %></a>
+                </li>
             <% }) %>
         </ul>
     </script>
