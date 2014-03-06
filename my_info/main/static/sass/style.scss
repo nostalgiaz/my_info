@@ -1,10 +1,37 @@
 @import "vars";
 @import "bootstrap";
+@import "mixins";
 @import "profile_info";
 @import "cluster";
 @import "tweets";
 
+html, body {
+  height: 100%;
+}
+
 body {
-  padding-top: $navbar-height;
   font-family: $font-sans;
+  color: $fg-color;
+  background-color: $bg-color;
+}
+
+footer {
+  color: #999;
+
+  span {
+    color: $red;
+  }
+
+  @media (min-width: 768px) {
+    position: fixed;
+    bottom: 0;
+  }
+
+  @media (min-width: 992px) {
+    width: 700px;
+  }
+}
+
+@include selection {
+  background: $selected-color;
 }

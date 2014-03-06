@@ -1,0 +1,62 @@
+@import "vars";
+@import "bootstrap/mixins";
+
+body {
+  text-align: center;
+}
+
+.site-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%; /* For at least Firefox */
+  min-height: 100%;
+}
+
+.site-wrapper-inner {
+  display: table-cell;
+  vertical-align: top;
+  @media (min-width: 768px) {
+    vertical-align: middle;
+  }
+}
+
+.cover-container {
+  margin-right: auto;
+  margin-left: auto;
+
+  @media (min-width: 768px) {
+    width: 100%;
+  }
+
+  @media (min-width: 992px) {
+    width: 700px;
+  }
+}
+
+.inner {
+  position: relative;
+  padding: 30px;
+}
+
+.cover {
+  padding: 0 20px;
+}
+
+.cover .btn-lg {
+  @include button-variant($white, $twitter-color, $twitter-color);
+}
+
+.lead, .cover-heading {
+  position: relative;
+  z-index: 1;
+}
+
+.icon-twitter {
+  position: absolute;
+  font-size: 420px;
+  left: -30%;
+  top: -50%;
+  line-height: 0;
+  color: #000;
+  z-index: 0;
+}

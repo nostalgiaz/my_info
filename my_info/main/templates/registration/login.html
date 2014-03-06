@@ -1,1 +1,30 @@
-<a href="{% url "social:begin" "twitter" %}">login twitter</a>
+{% extends "main/__site_base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static "stylesheets/login.css" %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="site-wrapper">
+        <div class="site-wrapper-inner">
+            <div class="cover-container">
+                <div class="inner cover">
+                    <h1 class="cover-heading">clusterify</h1>
+                    <i class="icon-twitter"></i>
+                    <p class="lead">
+                        Scegliere cosa leggere non è mai stato così semplice.<br>
+                        Un sistema di classificazione dinamico dei tuoi tweets è pronto all'uso.<br>
+                        Premi il pulsante. Inizia il gioco.
+                    </p>
+
+                    <p class="lead">
+                        <a href="{% url "social:begin" "twitter" %}" class="btn btn-lg btn-default">login with twitter</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

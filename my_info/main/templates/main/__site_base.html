@@ -9,14 +9,23 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{% block title %}{% endblock %} | my_info</title>
+    <title>{% block title %}{% endblock %} | clusterify</title>
+
     <link href='http://fonts.googleapis.com/css?family=Raleway:400,200' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static "stylesheets/deps/css/fontello.css" %}" />
     <link rel="stylesheet" href="{% static "stylesheets/style.css" %}" />
     {% block extra_style %}{% endblock %}
 </head>
 
 <body>
     {% block content %}{% endblock %}
+
+    <footer>
+        <div class="inner">
+            <p>Made with <span>❤</span> by
+                <a href="http://larentis.eu">Mattia Larentis</a>.</p>
+        </div>
+    </footer>
 
     <script src="{% static "jquery/dist/jquery.js" %}"></script>
     <script src="{% static "modernizr/modernizr.js" %}"></script>

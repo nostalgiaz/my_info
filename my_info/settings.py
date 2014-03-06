@@ -140,7 +140,7 @@ DATATXT_APP_ID = ''
 DATATXT_APP_KEY = ''
 
 LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/create_info_page"
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'my_info.wsgi.application'
