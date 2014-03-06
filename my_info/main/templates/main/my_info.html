@@ -6,32 +6,36 @@
 
 {% block content %}
     <div class="tweet-and-cluster">
-{#        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">#}
-{#            <div class="container">#}
-{#                <div class="navbar-header">#}
-{#                    <a class="navbar-brand" href="#">My Info</a>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Clusterify</a>
+                </div>
+            </div>
+        </div>
 
-        <div class="row">
+        <div class="row" style="margin-top: 40px;">
             <div class="col-md-3">
                 <div id="profile-info">
                     <img src="{{ image }}" alt="{{ nick }}" />
+
                     <h1>{{ full_name }}</h1>
-                    <h1><small>@{{ nick }}</small></h1>
+
+                    <h1>
+                        <small>@{{ nick }}</small>
+                    </h1>
 
                     <p>{{ bio }}</p>
 
-                    <table class="table">
-                         <tr>
-                            <td>{{ tweets_count }}</td>
-                            <td>{{ following_count }}</td>
-                            <td>{{ followers_count }}</td>
-                        </tr>
-                    </table>
+{#                    <table class="table">#}
+{#                         <tr>#}
+{#                            <td>{{ tweets_count }}</td>#}
+{#                            <td>{{ following_count }}</td>#}
+{#                            <td>{{ followers_count }}</td>#}
+{#                        </tr>#}
+{#                    </table>#}
 
-    {#                {{ location }}#}
+{#                {{ location }}#}
                 </div>
             </div>
             <div class="col-md-9">

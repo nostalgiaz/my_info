@@ -27,17 +27,18 @@ def create_info_page_task(username, user_id):
     # PERSONAL INFORMATION
     ###########################################################################
 
-    redis.set("{}:info".format(user_id), {
-        'user_id': user_id,
-        'full_name': info['name'],
-        'nick': info['screen_name'],
-        'bio': info['description'],
-        'image': info['profile_image_url'].replace('_normal', ''),
-        'tweets_count': info['statuses_count'],
-        'followers_count': info['followers_count'],
-        'following_count': info['friends_count'],
-        'location': info['location'],
-    })
+    if not redis.has("{}:info".format(user_id)):
+        redis.set("{}:info".format(user_id), {
+            'user_id': user_id,
+            'full_name': info['name'],
+            'nick': info['screen_name'],
+            'bio': info['description'],
+            'image': info['profile_image_url'].replace('_normal', ''),
+            'tweets_count': info['statuses_count'],
+            'followers_count': info['followers_count'],
+            'following_count': info['friends_count'],
+            'location': info['location'],
+        })
 
     ###########################################################################
     # CLUSTER & TWEETS

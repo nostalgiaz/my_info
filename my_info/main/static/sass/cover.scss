@@ -81,3 +81,12 @@ input {
 .error-input {
   border: 2px solid $red;
 }
+
+.inner {
+  position: relative;
+  padding: 30px;
+}
+
+input {
+  color: $bg-color;
+}
