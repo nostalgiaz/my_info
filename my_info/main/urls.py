@@ -43,5 +43,12 @@ urlpatterns = patterns(
         TemplateView.as_view(template_name='registration/login.html'),
         name="login"
     ),
+
+    url(
+        r'complete_registration/(?P<user_pk>\d+)/',
+        "complete_registration",
+        name="complete_registration"
+    ),
+
     url(r'logout/$', logout, name="logout")
 )

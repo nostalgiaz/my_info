@@ -33,17 +33,16 @@ body {
   }
 }
 
-.inner {
-  position: relative;
-  padding: 30px;
-}
-
 .cover {
   padding: 0 20px;
 }
 
 .cover .btn-lg {
   @include button-variant($white, $twitter-color, $twitter-color);
+}
+
+.cover-heading {
+  font-variant: small-caps;
 }
 
 .lead, .cover-heading {
@@ -59,4 +58,26 @@ body {
   line-height: 0;
   color: #000;
   z-index: 0;
+}
+
+$width-input: 80%;
+
+input {
+  padding: 15px 20px;
+  width: $width-input;
+
+  & + em {
+    display: block;
+    font-size: 12px;
+    font-family: $font-serif;
+    width: $width-input;
+    margin: 0 auto;
+    text-align: left;
+    color: $gray;
+    margin-top: 5px;
+  }
+}
+
+.error-input {
+  border: 2px solid $red;
 }

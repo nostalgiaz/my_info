@@ -1,6 +1,9 @@
 from ajaxutils.decorators import ajax
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 
 from my_info.cluster.cache import RedisCache
@@ -8,7 +11,29 @@ from my_info.main.tasks import create_info_page_task
 
 
 def home(request):
-    pass
+    return HttpResponseRedirect(reverse('login'))
+
+
+@login_required()
+def complete_registration(request, user_pk):
+    import re
+
+    email_request = request.POST.get("email")
+    email = re.match(
+        r'[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}', email_request
+    )
+
+    if not email:
+        return render(request, "main/post_create_info_page.html", {
+            'user_id': user_pk,
+            'email': email_request,
+            'error': 'email is required'
+        })
+
+    user = User.objects.get(pk=user_pk)
+    user.email = email.group()
+    user.save()
+    return HttpResponseRedirect(reverse('create_info_page'))
 
 
 @login_required()

@@ -11,11 +11,12 @@ html, body {
 
 body {
   font-family: $font-sans;
-  color: $fg-color;
   background-color: $bg-color;
+  color: $fg-color;
 }
 
 footer {
+  text-align: center;
   color: #999;
 
   span {
@@ -34,4 +35,14 @@ footer {
 
 @include selection {
   background: $selected-color;
+}
+
+
+.inner {
+  position: relative;
+  padding: 30px;
+}
+
+input {
+  color: $bg-color;
 }

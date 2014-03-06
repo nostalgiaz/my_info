@@ -1,9 +1,36 @@
 {% extends "main/__site_base.html" %}
+{% load static %}
+
+{% block title %}
+    {% if user.email %}Elaboration{% else %}Complete registration{% endif %}
+{% endblock %}
+
+{% block extra_style %}
+    {% if not user.email %}
+        <link rel="stylesheet" href="{% static "stylesheets/cover.css" %}" />
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     {% if not user.email %}
-        <div class="container">
+        <div class="site-wrapper">
+            <div class="site-wrapper-inner">
+                <div class="cover-container">
+                    <form class="inner cover" method="POST" action="{% url "complete_registration" user.pk %}">
+                        {% csrf_token %}
+                        <h1 class="cover-heading">We are almost done...</h1>
 
+                        <p class="lead">
+                            <input type="email" placeholder="name@example.com" value="{{ email }}" name="email" class="{% if error %}error-input{% endif %}">
+                            <em>We will never sell, rent, or trade your email. We hate spam, too!</em>
+                        </p>
+
+                        <p class="lead">
+                            <button class="btn btn-lg btn-default">elaborate!</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
         </div>
     {% else %}
         <div class="container">
