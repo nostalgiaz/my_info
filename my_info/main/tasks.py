@@ -44,7 +44,7 @@ def create_info_page_task(username, user_id):
     # CLUSTER & TWEETS
     ###########################################################################
     k = 20
-    if NUMBER_OF_TWEETS < 20:  # debug
+    if NUMBER_OF_TWEETS <= 20:  # debug
         k = 10
 
     clusterify = SpectralClusterify(TwitterReader(username), k)

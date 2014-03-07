@@ -55,8 +55,6 @@ class BaseClusterify(object):
 
         self.rel_matrix = rel
 
-        logger.info("rel")
-        logger.info(rel)
         return rel, degree
 
     def _generate_cluster_from_ids(self, ids):
