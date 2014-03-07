@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 
 from my_info.cluster.cache import RedisCache
 from my_info.main.models import Elaboration, UserInfo
@@ -58,8 +58,8 @@ def create_info_page(request):
 
 
 def elaboration_history(request, user_pk):
-    elaborations = Elaboration.objects.filter(
-        user__pk=user_pk).order_by('created')
+    elaborations = get_list_or_404(
+        Elaboration.objects.order_by('-created'), user__pk=user_pk)
 
     user_info = UserInfo.objects.get(user__pk=user_pk)
 
@@ -73,8 +73,11 @@ def elaboration_history(request, user_pk):
 
 
 def show_info_page(request, user_id):
-    elaboration = Elaboration.objects.get(elaboration_id=user_id)
+    elaboration = get_object_or_404(Elaboration, elaboration_id=user_id)
     user_info = UserInfo.objects.get(user=elaboration.user)
+
+    redis = RedisCache()
+    redis.delete('{}:step'.format(user_id))
 
     return render(request, "main/elaboration_render.html", {
         'user_id': user_id,

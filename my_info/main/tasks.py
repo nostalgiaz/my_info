@@ -32,7 +32,7 @@ def create_info_page_task(username, user_id):
 
     try:
         user_info = UserInfo.objects.get(user=user)
-    except:
+    except UserInfo.DoesNotExist:
         user_info = UserInfo()
 
     user_info.user = user

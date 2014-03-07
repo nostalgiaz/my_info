@@ -16,5 +16,9 @@ class RedisCache(object):
     def get(self, key):
         return json.loads(self.red.get(key))
 
+    def delete(self, key):
+        self.red.delete(key)
+        return True
+
     def cleanup(self):
         return self.red.flushdb()
