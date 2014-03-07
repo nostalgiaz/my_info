@@ -11,6 +11,18 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#">Clusterify</a>
                 </div>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ nick }}
+                            <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Run elaboration</a></li>
+                            <li><a href="#">Old elaboration</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
             </div>
         </div>
 
@@ -74,6 +86,7 @@
         };
     </script>
     <script src="{% static "d3/d3.js" %}"></script>
+    <script src="{% static "sass-bootstrap/js/dropdown.js" %}"></script>
     <script src="{% static "d3-tip/index.js" %}"></script>
     <script src="{% static "js/tweets.js" %}"></script>
     <script src="{% static "js/cluster.js" %}"></script>
