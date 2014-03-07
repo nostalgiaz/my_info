@@ -15,19 +15,19 @@ class Annotator(object):
 
     def annotate(self, test=None):
         """
-        # >>> a = Annotator([('mozilla funziona peggio di google chrome', '')])
-        # >>> a.annotate(test="annotations")
-        # [u'http://it.wikipedia.org/wiki/Mozilla', \
-# u'http://it.wikipedia.org/wiki/Google_Chrome']
-        # >>> a = Annotator([('@mozilla funziona peggio di google chrome', '')])
-        # >>> a.annotate(test="annotations")
+        >>> a = Annotator([('mozilla funziona google chrome', '', '')])
+        >>> a.annotate(test="annotations")
+        [u'http://it.wikipedia.org/wiki/Mozilla', \
+u'http://it.wikipedia.org/wiki/Google_Chrome']
+        >>> a = Annotator([('@mozilla funziona google chrome', '', '')])
+        >>> a.annotate(test="annotations")
         [u'http://it.wikipedia.org/wiki/Google_Chrome']
-        # >>> a = Annotator([('mozilla funziona peggio di @google_chrome', '')])
-        # >>> a.annotate(test="annotations")
-        # [u'http://it.wikipedia.org/wiki/Mozilla']
-        # >>> a = Annotator([('@mozilla funziona peggio di @google_chrome', '')])
-        # >>> a.annotate(test="annotations")
-        # []
+        >>> a = Annotator([('mozilla funziona @google_chrome', '', '')])
+        >>> a.annotate(test="annotations")
+        [u'http://it.wikipedia.org/wiki/Mozilla']
+        >>> a = Annotator([('@mozilla funziona @google_chrome', '', '')])
+        >>> a.annotate(test="annotations")
+        []
         """
         tweets = defaultdict(list)
 
@@ -35,7 +35,7 @@ class Annotator(object):
 
         for i, text in enumerate(self.texts):
             text_ann = []
-            for x in text.split('\s'):
+            for x in text.split(' '):
                 if x.startswith('@'):
                     x = "_" * len(x)
                 text_ann.append(x)
