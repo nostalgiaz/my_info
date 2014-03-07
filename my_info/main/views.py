@@ -7,6 +7,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 
 from my_info.cluster.cache import RedisCache
+from my_info.main.models import Elaboration
 from my_info.main.tasks import create_info_page_task
 
 
@@ -69,23 +70,31 @@ def get_process_status(request, user_id):
 
 
 def show_info_page(request, user_id):
-    redis = RedisCache()
+    elaboration = Elaboration.objects.get(elaboration_id=user_id)
+
     return render(
         request,
         "main/my_info.html",
-        redis.get('{}:info'.format(user_id))
+        elaboration.info
     )
 
 
 @ajax()
 def show_cluster(request, user_id):
-    redis = RedisCache()
-    return redis.get('{}:cluster'.format(user_id))
+    elaboration = Elaboration.objects.get(elaboration_id=user_id)
+    return elaboration.cluster
 
 
 @ajax()
 def show_tweets(request, user_id):
-    redis = RedisCache()
+    elaboration = Elaboration.objects.get(elaboration_id=user_id)
+
     topics = request.GET.get('topics')
-    tweet_list = redis.get('{}:tweets'.format(user_id))
+    tweet_list = elaboration.tweets
     return [v for k, v in tweet_list.iteritems() if k in topics]
+
+
+def elaboration_history(request, user_pk):
+    return render(request, "main/elaboration_history.html", {
+        'elaborations': Elaboration.objects.filter(user__pk=user_pk)
+    })

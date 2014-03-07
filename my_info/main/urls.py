@@ -50,5 +50,12 @@ urlpatterns = patterns(
         name="complete_registration"
     ),
 
+
+    url(
+        r'elaboration_history/(?P<user_pk>\d+)/',
+        "elaboration_history",
+        name="elaboration_history"
+    ),
+
     url(r'logout/$', logout, name="logout")
 )
