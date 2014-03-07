@@ -1,0 +1,45 @@
+{% extends "main/_fullscreen.html" %}
+
+{% load static %}
+
+{% block title %}{{ nick }}'s tweets{% endblock %}
+
+{% block content %}
+    <div id="cluster">loading...</div>
+{% endblock %}
+
+{% block modal %}
+    <div id="tweets" class="overlay overlay-contentscale"></div>
+
+    <script id="tweets-template" type="text/template" class="template">
+        <button type="button" class="overlay-close">Close</button>
+        <ul>
+            <% _.each(tweets, function(el) { %>
+                <li>
+                    <div class="tweets-user-profile">
+                        <img src="<%= el.user.profile_image_url_https %>" alt="<%= el.user.screen_name %>">
+                        <%= el.user.name %>
+                        <%= el.user.screen_name %>
+                    </div>
+                    <a href="<%= el.url %>" target="_blank"><%= el.text %></a>
+                </li>
+            <% }) %>
+        </ul>
+    </script>
+{% endblock %}
+
+{% block extra_script %}
+    {{ block.super }}
+    <script>
+        window.my_info = {
+            urls: {
+                cluster: "{% url "show_cluster" user_id %}",
+                tweets: "{% url "show_tweets" user_id %}"
+            }
+        };
+    </script>
+    <script src="{% static "d3/d3.js" %}"></script>
+    <script src="{% static "d3-tip/index.js" %}"></script>
+    <script src="{% static "js/tweets.js" %}"></script>
+    <script src="{% static "js/cluster.js" %}"></script>
+{% endblock %}

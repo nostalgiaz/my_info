@@ -1,0 +1,54 @@
+{% extends "main/_cover.html" %}
+{% load static %}
+
+{% block title %}Elaboration{% endblock %}
+
+{% block content %}
+    <div id="process" class="row">
+        <h2>your Clusterify progress</h2>
+
+        <div class="col-md-3">
+            <img src="{% static "img/twitter.png" %}" alt="twitter">
+            <h4>Twitter</h4>
+            <p>Getting data from your timeline.</p>
+        </div>
+        <div class="col-md-3">
+            <img src="{% static "img/spaziodati.png" %}" alt="spaziodati">
+            <h4>Annotation</h4>
+            <p>Using dataTXT to annotate your tweets.</p>
+        </div>
+        <div class="col-md-3">
+            <img src="{% static "img/clustering.png" %}" alt="clustering">
+            <h4>Clustering</h4>
+            <p>Running clustering process.</p>
+        </div>
+        <div class="col-md-3">
+            <img src="{% static "img/result.png" %}" alt="result">
+            <h4>Clusterify</h4>
+            <a href="{% url "show_info_page" user_id %}" class="btn btn-block btn-danger">Checkout your data!</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        (function () {
+            var $status = $('#process').find('.col-md-3')
+                , maxStatus = 4;
+
+            (function poll() {
+                $.get("{% url "get_process_status" user_id %}", function (data) {
+                    if (data.step > 0) {
+                        $status.removeClass('active');
+                        $status.eq(data.step - 1).addClass('active');
+                    }
+                    if (data.step != maxStatus) {
+                        setTimeout(function () {
+                            poll();
+                        }, 1000);
+                    }
+                });
+            })();
+        })();
+    </script>
+{% endblock %}

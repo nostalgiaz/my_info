@@ -1,52 +1,18 @@
-{% extends "main/__site_base.html" %}
+{% extends "main/_fullscreen.html" %}
 
 {% load static %}
 
 {% block title %}Elaboration History{% endblock %}
 
 {% block content %}
-    <div class="tweet-and-cluster">
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Clusterify</a>
-                </div>
-
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }}
-                            <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{% url "create_info_page" %}">Run elaboration</a></li>
-                            <li><a href="#">Old elaboration</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{% url "logout" %}">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-
-            </div>
-        </div>
-
-        <div class="row" style="margin-top: 40px;">
-            <div class="col-md-3">
-                <div id="profile-info">
-                    <img src="{{ image }}" alt="{{ nick }}" />
-
-                    <h1>{{ full_name }}</h1>
-
-                    <h1>
-                        <small>@{{ nick }}</small>
-                    </h1>
-
-                    <p>{{ bio }}</p>
-                </div>
-            </div>
-            <div class="col-md-9">
-                {% for elaboration in elaborations %}
-                   <a href="{% url "show_info_page" elaboration.elaboration_id  %}">{{ elaboration.elaboration_id }}</a>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+    <h3>Elaboration History</h3>
+    <ul>
+    {% for elaboration in elaborations %}
+        <li>
+            <a href="{% url "show_info_page" elaboration.elaboration_id %}">
+                {{ elaboration.created }}
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
 {% endblock %}

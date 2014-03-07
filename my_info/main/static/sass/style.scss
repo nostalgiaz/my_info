@@ -2,8 +2,10 @@
 @import "../../../../components/bower_components/sass-bootstrap/lib/bootstrap";
 @import "mixins";
 @import "profile_info";
+@import "process";
 @import "cluster";
 @import "tweets";
+//@import "cover";
 
 html, body {
   height: 100%;

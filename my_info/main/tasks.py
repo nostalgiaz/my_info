@@ -12,7 +12,7 @@ from my_info.cluster.reader import TwitterReader
 from my_info.local_settings import EMAIL_HOST_USER
 
 from my_info.main.celery import app
-from my_info.main.models import Elaboration
+from my_info.main.models import Elaboration, UserInfo
 from my_info.settings import NUMBER_OF_TWEETS
 
 logger = get_task_logger(__name__)
@@ -24,22 +24,23 @@ def create_info_page_task(username, user_id):
     redis = RedisCache()
     twitter = get_twitter_from_username(username)
     info = twitter.show_user(screen_name=username)
+    user = User.objects.get(username=username)
 
     ###########################################################################
     # PERSONAL INFORMATION
     ###########################################################################
 
-    elaboration.info = {
-        'user_id': user_id,
-        'full_name': info['name'],
-        'nick': info['screen_name'],
-        'bio': info['description'],
-        'image': info['profile_image_url'].replace('_normal', ''),
-        'tweets_count': info['statuses_count'],
-        'followers_count': info['followers_count'],
-        'following_count': info['friends_count'],
-        'location': info['location'],
-    }
+    try:
+        user_info = UserInfo.objects.get(user=user)
+    except:
+        user_info = UserInfo()
+
+    user_info.user = user
+    user_info.full_name = info['name']
+    user_info.nick = info['screen_name']
+    user_info.bio = info['description']
+    user_info.image = info['profile_image_url'].replace('_normal', '')
+    user_info.save()
 
     ###########################################################################
     # CLUSTER & TWEETS
@@ -48,18 +49,17 @@ def create_info_page_task(username, user_id):
     if NUMBER_OF_TWEETS <= 20:  # debug
         k = 10
 
-    clusterify = SpectralClusterify(TwitterReader(username), k)
     redis.set('{}:step'.format(user_id), 1)
+    clusterify = SpectralClusterify(TwitterReader(username), k)
 
-    elaboration.tweets = clusterify.annotate()
     redis.set('{}:step'.format(user_id), 2)
+    elaboration.tweets = clusterify.annotate()
 
-    elaboration.cluster = clusterify.do_cluster()
     redis.set('{}:step'.format(user_id), 3)
+    elaboration.cluster = clusterify.do_cluster()
 
     redis.set('{}:step'.format(user_id), 4)  # exit code
 
-    user = User.objects.get(username=username)
     elaboration.user = user
     elaboration.save()
 

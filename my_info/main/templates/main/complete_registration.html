@@ -1,0 +1,19 @@
+{% extends "main/_cover.html" %}
+
+{% block title %}Complete registration{% endblock %}
+
+{% block content %}
+    <form method="POST" action="{% url "save_email" user.pk %}">
+        {% csrf_token %}
+        <h1 class="cover-heading">We are almost done...</h1>
+
+        <p class="lead">
+            <input type="email" placeholder="name@example.com" value="{{ email }}" name="email" class="{% if error %}error-input{% endif %}">
+            <em>We will never sell, rent, or trade your email. We hate spam, too!</em>
+        </p>
+
+        <p class="lead">
+            <button class="btn btn-lg btn-default">elaborate!</button>
+        </p>
+    </form>
+{% endblock %}

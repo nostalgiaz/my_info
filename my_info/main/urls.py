@@ -45,11 +45,16 @@ urlpatterns = patterns(
     ),
 
     url(
-        r'complete_registration/(?P<user_pk>\d+)/',
-        "complete_registration",
+        r'complete_registration/$',
+        TemplateView.as_view(template_name='main/complete_registration.html'),
         name="complete_registration"
     ),
 
+    url(
+        r'save_email/(?P<user_pk>\d+)/',
+        "save_email",
+        name="save_email"
+    ),
 
     url(
         r'elaboration_history/(?P<user_pk>\d+)/',
@@ -57,5 +62,10 @@ urlpatterns = patterns(
         name="elaboration_history"
     ),
 
-    url(r'logout/$', logout, name="logout")
+    url(
+        r'logout/$',
+        logout,
+        {"next_page": "/login/"},
+        name="logout",
+    )
 )
