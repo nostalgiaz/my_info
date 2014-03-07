@@ -105,8 +105,16 @@ def show_cluster(request, user_id):
 @ajax()
 def show_tweets(request, user_id):
     elaboration = Elaboration.objects.get(elaboration_id=user_id)
-
     topics = request.GET.get('topics')
-    tweet_list = elaboration.tweets
-    return [v for k, v in tweet_list.iteritems() if k in topics]
+
+    tweet_list = []
+    tweet_set = set()
+
+    for k, v in elaboration.tweets.iteritems():
+        text = v[0]['text']
+        if k in topics and text not in tweet_set:
+            tweet_set.add(text)
+            tweet_list.append(v)
+
+    return tweet_list
 
