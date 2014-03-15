@@ -24,18 +24,21 @@ class DataTXT(object):
                 args[0],
                 min_confidence=.7,
                 parse_hashtag=True,
+                deep_analysis=True,
+                min_length=4,
+                epsilon=.5,
             )
-            id = sha1(annotated.lang + str(annotated.annotations)).hexdigest()
+            id_ = sha1(annotated.lang + str(annotated.annotations)).hexdigest()
 
             return {
-                'id': id,
+                'id': id_,
                 'lang': annotated.lang,
                 'annotations': {
                     a.uri: a for a in annotated.annotations
                 }
             }
         except DandelionException:
-            logger.info("dandelion exception")
+            logger.info("dandelion exception: " + args[0])
 
     @staticmethod
     def _rel_request(lang, topic1, topic2):
@@ -77,15 +80,20 @@ class DataTXT(object):
                 if topic1_it is not None and topic2_it is not None:
                     value_it = self._rel_request('it', topic1_it, topic2_it)
 
-                if value_it != -1 and value_en != -1:
-                    value = (value_en + value_it) / 2.
-                elif value_it == -1 and value_en != -1:
-                    value = value_en
-                elif value_it != -1 and value_en == -1:
-                    value = value_it
+                if value_it != -1:
+                    if value_en != -1:
+                        value = max(value_en, value_it)
+                    else:
+                        value = value_it
                 else:
-                    value = 0
+                    if value_en != -1:
+                        value = value_en
+                    else:
+                        value = 0
 
+            # value = 0 if value < .3 else value
+            
+            logger.info(cache_key + ": " + str(value))
             self.cache.set(cache_key, value)
 
         return self.cache.get(cache_key)
