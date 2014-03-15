@@ -1,4 +1,6 @@
 # coding=utf-8
+import re
+
 from collections import defaultdict
 from celery.utils.log import get_task_logger
 from my_info.cluster.datatxt import DataTXT
@@ -28,16 +30,25 @@ u'http://it.wikipedia.org/wiki/Google_Chrome']
         >>> a = Annotator([('@mozilla funziona @google_chrome', '', '')])
         >>> a.annotate(test="annotations")
         []
+        >>> a = Annotator([('@google funziona http://google.com', '', '')])
+        >>> a.annotate(test="annotations")
+        []
         """
         tweets = defaultdict(list)
 
         annotated_texts_tmp = []
+        rew = "((https?|ftp)://|(www|ftp)\.)[a-z0-9-]+(\.[a-z0-9-]+)+([/?].*)?"
 
         for i, text in enumerate(self.texts):
             text_ann = []
             for x in text.split(' '):
-                if x.startswith('@'):
+                if x.startswith('@'):             # username
                     x = "_" * len(x)
+                else:                             # website
+                    match = re.search(rew, x)
+                    if match:
+                        x = "_" * len(x)
+
                 text_ann.append(x)
 
             text_ann = u" ".join(text_ann)
