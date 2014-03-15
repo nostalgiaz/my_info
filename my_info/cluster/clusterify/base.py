@@ -42,7 +42,6 @@ class BaseClusterify(object):
         logger.info(self.topic_set)
 
         rel = zeros((len(self.topic_set), len(self.topic_set)))
-        degree = zeros(len(self.topic_set))
 
         for i, topic1 in enumerate(self.topic_set):
             for j, topic2 in enumerate(self.topic_set):
@@ -50,14 +49,12 @@ class BaseClusterify(object):
                     rel_value = self.datatxt.rel(topic1, topic2)
                     rel[i][j] = rel_value
                     rel[j][i] = rel_value
-                    degree[i] += rel_value
-                    degree[j] += rel_value
 
         self.rel_matrix = rel
 
-        return rel, degree
+        return rel
 
-    def _generate_cluster_from_ids(self, ids):
+    def _generate_cluster(self, ids):
         response = {}
 
         for i, id in enumerate(ids):
