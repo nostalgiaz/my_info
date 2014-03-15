@@ -5,13 +5,24 @@ from django.views.generic import TemplateView
 urlpatterns = patterns(
     'my_info.main.views',
 
-    # welcome page
     url(r'^$', "home", name="home"),
 
     url(
-        r'create_info_page/$',
-        "create_info_page",
-        name="create_info_page"
+        r'twitter_callback/$',
+        "twitter_callback",
+        name="twitter_callback"
+    ),
+
+    url(
+        r'start_elaboration/$',
+        "start_elaboration",
+        name="start_elaboration"
+    ),
+
+    url(
+        r'elaboration/(?P<elaboration_id>[0-9a-f]{5,40})/$',
+        "elaboration",
+        name="elaboration"
     ),
 
     url(
@@ -27,13 +38,13 @@ urlpatterns = patterns(
     ),
 
     url(
-        r'show_cluster/(?P<user_id>[0-9a-f]{5,40})/',
+        r'show_cluster/(?P<user_id>[0-9a-f]{5,40})/$',
         "show_cluster",
         name="show_cluster"
     ),
 
     url(
-        r'show_tweets/(?P<user_id>[0-9a-f]{5,40})/',
+        r'show_tweets/(?P<user_id>[0-9a-f]{5,40})/$',
         "show_tweets",
         name="show_tweets"
     ),

@@ -25,7 +25,7 @@
         <div class="col-md-3">
             <img src="{% static "img/result.png" %}" alt="result">
             <h4>Clusterify</h4>
-            <a href="{% url "show_info_page" user_id %}" class="btn btn-block btn-danger">Checkout your data!</a>
+            <a href="{% url "show_info_page" elaboration_id %}" class="btn btn-block btn-danger">Checkout your data!</a>
         </div>
     </div>
 {% endblock %}
@@ -37,7 +37,7 @@
                 , maxStatus = 4;
 
             (function poll() {
-                $.get("{% url "get_process_status" user_id %}", function (data) {
+                $.get("{% url "get_process_status" elaboration_id %}", function (data) {
                     if (data.step > 0) {
                         $status.removeClass('active');
                         $status.eq(data.step - 1).addClass('active');

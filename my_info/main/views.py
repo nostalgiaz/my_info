@@ -15,7 +15,28 @@ from my_info.main.tasks import create_info_page_task
 
 
 def home(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('twitter_callback'))
+
     return HttpResponseRedirect(reverse('login'))
+
+
+@login_required()
+def twitter_callback(request):
+    user = request.user
+    if user.email == "":
+        return HttpResponseRedirect(reverse('complete_registration'))
+
+    try:
+        elaboration_id = Elaboration.objects.filter(
+            user__pk=request.user.pk).order_by('-created')[0].elaboration_id
+
+        return HttpResponseRedirect(
+            reverse('show_info_page', args=[elaboration_id])
+        )
+
+    except IndexError:
+        return HttpResponseRedirect(reverse('start_elaboration'))
 
 
 @login_required()
@@ -37,28 +58,31 @@ def save_email(request, user_pk):
     user = User.objects.get(pk=user_pk)
     user.email = email.group()
     user.save()
-    return HttpResponseRedirect(reverse('create_info_page'))
+    return HttpResponseRedirect(reverse('twitter_callback'))
 
 
-@login_required()
-def create_info_page(request):
-    if request.user.email != "":
-        redis = RedisCache()
-        username = request.user.username
-        user_id = sha1(username + str(datetime.now())).hexdigest()
+def start_elaboration(request):
+    user = request.user
+    redis = RedisCache()
+    elaboration_id = sha1(user.username + str(datetime.now())).hexdigest()
 
-        redis.set('{}:step'.format(user_id), 0)
-        create_info_page_task.delay(
-            username, user_id, request.build_absolute_uri(
-                reverse('show_info_page', args=[user_id])
-            )
+    redis.set('{}:step'.format(elaboration_id), 0)
+
+    create_info_page_task.delay(
+        user.username, elaboration_id, request.build_absolute_uri(
+            reverse('show_info_page', args=[elaboration_id])
         )
+    )
 
-        return render(request, "main/elaboration_process.html", {
-            'user_id': user_id
-        })
+    return HttpResponseRedirect(
+        reverse('elaboration', args=[elaboration_id])
+    )
 
-    return HttpResponseRedirect(reverse('complete_registration'))
+
+def elaboration(request, elaboration_id):
+    return render(request, "main/elaboration_process.html", {
+        'elaboration_id': elaboration_id
+    })
 
 
 def elaboration_history(request, user_pk):
