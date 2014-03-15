@@ -1,16 +1,16 @@
-from sklearn.cluster import KMeans
+from sklearn.cluster import AffinityPropagation
 from my_info.cluster.clusterify.base import BaseClusterify
 
 
-class KMeansClusterify(BaseClusterify):
+class AffinityPropagationClusterify(BaseClusterify):
     def __init__(self, reader, k):
-        super(KMeansClusterify, self).__init__(reader=reader, k=k)
+        super(AffinityPropagationClusterify, self).__init__(reader=reader, k=k)
 
     def do_cluster(self):
         relatedness_matrix = self._generate_adjagent_matrix()
 
-        cluster = KMeans(
-            n_clusters=self.k,
+        cluster = AffinityPropagation(
+            affinity="precomputed"
         ).fit(relatedness_matrix)
 
         response = self._generate_cluster(cluster.labels_)

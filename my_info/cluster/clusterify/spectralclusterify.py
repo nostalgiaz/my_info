@@ -1,5 +1,4 @@
-from sklearn.cluster import spectral_clustering
-
+from sklearn.cluster import SpectralClustering
 from my_info.cluster.clusterify.base import BaseClusterify
 
 
@@ -8,7 +7,13 @@ class SpectralClusterify(BaseClusterify):
         super(SpectralClusterify, self).__init__(reader=reader, k=k)
 
     def do_cluster(self):
-        rel, _ = self._generate_adjagent_matrix()
-        ids = spectral_clustering(rel, self.k)
-        response = self._generate_cluster_from_ids(ids)
+        relatedness_matrix = self._generate_adjagent_matrix()
+
+        cluster = SpectralClustering(
+            n_clusters=self.k,
+            affinity="precomputed"
+        ).fit(relatedness_matrix)
+
+        response = self._generate_cluster(cluster.labels_)
+
         return self._generate_output_response(response)
