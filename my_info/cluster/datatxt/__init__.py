@@ -92,7 +92,7 @@ class DataTXT(object):
                         value = 0
 
             # value = 0 if value < .3 else value
-            
+
             logger.info(cache_key + ": " + str(value))
             self.cache.set(cache_key, value)
 

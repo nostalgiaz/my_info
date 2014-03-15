@@ -6,7 +6,11 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 
 from my_info.cluster.cache import RedisCache
+from my_info.cluster.clusterify.affinitypropagationclusterify import \
+    AffinityPropagationClusterify
 from my_info.cluster.clusterify.spectralclusterify import SpectralClusterify
+from my_info.cluster.clusterify.kmeansclusterify import KMeansClusterify
+from my_info.cluster.clusterify.starclusterify import StarClusterify
 from my_info.cluster.helpers import get_twitter_from_username
 from my_info.cluster.reader import TwitterReader
 from my_info.local_settings import EMAIL_HOST_USER
@@ -19,7 +23,7 @@ logger = get_task_logger(__name__)
 
 
 @app.task
-def create_info_page_task(username, user_id):
+def create_info_page_task(username, user_id, url):
     elaboration = Elaboration(elaboration_id=user_id)
     redis = RedisCache()
     twitter = get_twitter_from_username(username)
@@ -45,18 +49,22 @@ def create_info_page_task(username, user_id):
     ###########################################################################
     # CLUSTER & TWEETS
     ###########################################################################
-    k = 20
+    k = 50
     if NUMBER_OF_TWEETS <= 20:  # debug
         k = 10
 
     redis.set('{}:step'.format(user_id), 1)
-    clusterify = SpectralClusterify(TwitterReader(username), k)
+    clusterify = AffinityPropagationClusterify(TwitterReader(username), k)
+    # clusterify = SpectralClusterify(TwitterReader(username), k)
+    # clusterify = StarClusterify(TwitterReader(username))
 
     redis.set('{}:step'.format(user_id), 2)
     elaboration.tweets = clusterify.annotate()
 
     redis.set('{}:step'.format(user_id), 3)
     elaboration.cluster = clusterify.do_cluster()
+
+    logger.info(elaboration.cluster)
 
     redis.set('{}:step'.format(user_id), 4)  # exit code
 
@@ -65,14 +73,10 @@ def create_info_page_task(username, user_id):
 
     subject, to = "Work done!", user.email
 
-    text_content = "Checkout the final elaboration here: {}".format(
-        reverse('get_process_status', args=[user_id])
-    )
+    text_content = "Checkout the final elaboration here: {}".format(url)
 
-    html_content = \
-        '<p>Checkout the final elaboration <a href="{}">here</a></p>'.format(
-            reverse('get_process_status', args=[user_id])
-        )
+    html_content = '<p>Checkout the final elaboration <a href="{}">' \
+                   'here</a></p>'.format(url)
 
     msg = EmailMultiAlternatives(subject, text_content, EMAIL_HOST_USER, [to])
     msg.attach_alternative(html_content, "text/html")

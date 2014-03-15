@@ -48,7 +48,11 @@ def create_info_page(request):
         user_id = sha1(username + str(datetime.now())).hexdigest()
 
         redis.set('{}:step'.format(user_id), 0)
-        create_info_page_task.delay(username, user_id)
+        create_info_page_task.delay(
+            username, user_id, request.build_absolute_uri(
+                reverse('show_info_page', args=[user_id])
+            )
+        )
 
         return render(request, "main/elaboration_process.html", {
             'user_id': user_id
