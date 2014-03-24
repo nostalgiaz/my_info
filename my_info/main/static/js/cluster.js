@@ -216,12 +216,21 @@
             , current
             , start
             , end
+            , j
+            , prevItem = {}
             , item;
 
-          for (var j in sortedList) {
+          for (j in sortedList) {
             item = sortedList[j];
             start = item['start'];
             end = item['end'];
+
+            if (prevItem)
+              if (item['start'] >= prevItem['start'] && prevItem['end'] <= item['end'])
+                continue;
+              else if (prevItem['start'] >= item['start'] && item['end'] <= prevItem['end'])
+                continue;
+
             current = _.template(tmplCurrent, {
               'spot': item['spot']
             });
@@ -232,6 +241,9 @@
               'next': text.substr(end + offset)
             });
             offset += current.length - (end - start);
+
+            prevItem['start'] = start;
+            prevItem['end'] = end;
           }
 
           tweet['text'] = text;
