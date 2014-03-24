@@ -5,6 +5,8 @@
     , padding = 1.5 // separation between same-color circles
     , clusterPadding = 10 // separation between different-color circles
     , maxRadius = 12
+    , minOpacity = .6
+    , maxOpacity = 1
     ;
 
   $.get(window.my_info.urls.cluster).done(function (data) {
@@ -72,12 +74,94 @@
       .attr("fill", function (d) {
         return color(d.cluster);
       })
+      .attr('opacity', minOpacity)
       .attr('data-topic', function (d) {
         return d.url.split('/').pop();
       })
-      .on('mouseover', tip.show)
-      .on('mouseout', tip.hide)
-      .on('click', showTweets)
+      .attr('class', function (d) {
+        return "cluster-" + d.cluster;
+      })
+      .on('mouseover', function (d) {
+        d3.selectAll('.cluster-' + d.cluster).attr('opacity', maxOpacity);
+        tip.show(d)
+      })
+      .on('mouseout', function (d) {
+        d3.selectAll('.cluster-' + d.cluster).attr('opacity', minOpacity);
+        tip.hide(d);
+      })
+      .on('click', function (d) {
+        var cluster = clusterNodes[d.cluster]
+          , topics = [];
+
+        for (var i in cluster)
+          topics.push(cluster[i].url);
+
+        $.get(window.my_info.urls.tweets, {'topics': JSON.stringify(topics)}).done(function (data) {
+          var tmplTweets = $("#tweets-template").html()
+            , tmplTweet = '<%= prev %><%= current %><%= next %>'
+            , tmplCurrent = '<span class="annotated-entity"><%= spot %></span>'
+            , tweets = [];
+
+          $.each(data, function (i, ell) {
+            var el = ell[0]
+              , tweet = {
+                'url': el.url,
+                'text': el.text,
+                'user': el.user
+              }
+              , text = el.text
+              , sortedList = el.annotations.sort(function (a, b) {
+                return a['start'] - b['start']
+              })
+              , offset = 0
+              , current
+              , start
+              , end
+              , j
+              , prevItem = {}
+              , item;
+
+            for (j in sortedList) {
+              item = sortedList[j];
+              start = item['start'];
+              end = item['end'];
+
+              if (prevItem)
+                if (item['start'] >= prevItem['start'] && prevItem['end'] <= item['end'])
+                  continue;
+                else if (prevItem['start'] >= item['start'] && item['end'] <= prevItem['end'])
+                  continue;
+
+              current = _.template(tmplCurrent, {
+                'spot': item['spot']
+              });
+
+              text = _.template(tmplTweet, {
+                'prev': text.substr(0, start + offset),
+                'current': current,
+                'next': text.substr(end + offset)
+              });
+              offset += current.length - (end - start);
+
+              prevItem['start'] = start;
+              prevItem['end'] = end;
+            }
+
+            tweet['text'] = text;
+            tweets.push(tweet);
+          });
+
+          $('#tweets').html(_.template(tmplTweets, {'tweets': tweets}));
+          toggleOverlay();
+          $('.overlay').css('background', "rgba(" + hexToRgb(color(d.cluster)) + ", .9)");
+          $('.overlay-close').on('click', toggleOverlay);
+
+          $(document).keyup(function (e) {
+            if (e.keyCode == 27)
+              toggleOverlay();
+          });
+        });
+      })
       .call(force.drag);
 
     function tick(e) {
@@ -188,78 +272,5 @@
       return r + "," + g + "," + b;
     }
 
-    function showTweets(d) {
-      var cluster = clusterNodes[d.cluster]
-        , topics = [];
-
-      for (var i in cluster)
-        topics.push(cluster[i].url);
-
-      $.get(window.my_info.urls.tweets, {'topics': JSON.stringify(topics)}).done(function (data) {
-        var tmplTweets = $("#tweets-template").html()
-          , tmplTweet = '<%= prev %><%= current %><%= next %>'
-          , tmplCurrent = '<span class="annotated-entity"><%= spot %></span>'
-          , tweets = [];
-
-        $.each(data, function (i, ell) {
-          var el = ell[0]
-            , tweet = {
-              'url': el.url,
-              'text': el.text,
-              'user': el.user
-            }
-            , text = el.text
-            , sortedList = el.annotations.sort(function (a, b) {
-              return a['start'] - b['start']
-            })
-            , offset = 0
-            , current
-            , start
-            , end
-            , j
-            , prevItem = {}
-            , item;
-
-          for (j in sortedList) {
-            item = sortedList[j];
-            start = item['start'];
-            end = item['end'];
-
-            if (prevItem)
-              if (item['start'] >= prevItem['start'] && prevItem['end'] <= item['end'])
-                continue;
-              else if (prevItem['start'] >= item['start'] && item['end'] <= prevItem['end'])
-                continue;
-
-            current = _.template(tmplCurrent, {
-              'spot': item['spot']
-            });
-
-            text = _.template(tmplTweet, {
-              'prev': text.substr(0, start + offset),
-              'current': current,
-              'next': text.substr(end + offset)
-            });
-            offset += current.length - (end - start);
-
-            prevItem['start'] = start;
-            prevItem['end'] = end;
-          }
-
-          tweet['text'] = text;
-          tweets.push(tweet);
-        });
-
-        $('#tweets').html(_.template(tmplTweets, {'tweets': tweets}));
-        toggleOverlay();
-        $('.overlay').css('background', "rgba(" + hexToRgb(color(d.cluster)) + ", .9)");
-        $('.overlay-close').on('click', toggleOverlay);
-        
-        $(document).keyup(function(e) {
-          if (e.keyCode == 27)
-            toggleOverlay();
-        });
-      });
-    }
   });
 })();
