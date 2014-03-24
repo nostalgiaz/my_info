@@ -254,6 +254,11 @@
         toggleOverlay();
         $('.overlay').css('background', "rgba(" + hexToRgb(color(d.cluster)) + ", .9)");
         $('.overlay-close').on('click', toggleOverlay);
+        
+        $(document).keyup(function(e) {
+          if (e.keyCode == 27)
+            toggleOverlay();
+        });
       });
     }
   });
