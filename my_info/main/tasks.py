@@ -23,8 +23,8 @@ logger = get_task_logger(__name__)
 
 
 @app.task
-def create_info_page_task(username, user_id, url):
-    elaboration = Elaboration(elaboration_id=user_id)
+def create_info_page_task(username, elaboration_id, url):
+    elaboration = Elaboration(elaboration_id=elaboration_id)
     redis = RedisCache()
     twitter = get_twitter_from_username(username)
     info = twitter.show_user(screen_name=username)
@@ -53,20 +53,20 @@ def create_info_page_task(username, user_id, url):
     if NUMBER_OF_TWEETS <= 20:  # debug
         k = 10
 
-    redis.set('{}:step'.format(user_id), 1)
+    redis.set('{}:step'.format(elaboration_id), 1)
     clusterify = AffinityPropagationClusterify(TwitterReader(username), k)
     # clusterify = SpectralClusterify(TwitterReader(username), k)
     # clusterify = StarClusterify(TwitterReader(username))
 
-    redis.set('{}:step'.format(user_id), 2)
+    redis.set('{}:step'.format(elaboration_id), 2)
     elaboration.tweets = clusterify.annotate()
 
-    redis.set('{}:step'.format(user_id), 3)
+    redis.set('{}:step'.format(elaboration_id), 3)
     elaboration.cluster = clusterify.do_cluster()
 
     logger.info(elaboration.cluster)
 
-    redis.set('{}:step'.format(user_id), 4)  # exit code
+    redis.set('{}:step'.format(elaboration_id), 4)  # exit code
 
     elaboration.user = user
     elaboration.save()

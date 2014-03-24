@@ -50,7 +50,7 @@ def save_email(request, user_pk):
 
     if not email:
         return render(request, "main/complete_registration.html", {
-            'user_id': user_pk,
+            'elaboration_id': user_pk,
             'email': email_request,
             'error': 'email is required'
         })
@@ -100,12 +100,12 @@ def elaboration_history(request, user_pk):
     })
 
 
-def show_info_page(request, user_id):
-    elaboration = get_object_or_404(Elaboration, elaboration_id=user_id)
+def show_info_page(request, elaboration_id):
+    elaboration = get_object_or_404(Elaboration, elaboration_id=elaboration_id)
     user_info = UserInfo.objects.get(user=elaboration.user)
 
     return render(request, "main/elaboration_render.html", {
-        'user_id': user_id,
+        'elaboration_id': elaboration_id,
         'image': user_info.image,
         'full_name': user_info.full_name,
         'bio': user_info.bio,
@@ -114,22 +114,22 @@ def show_info_page(request, user_id):
 
 
 @ajax()
-def get_process_status(request, user_id):
+def get_process_status(request, elaboration_id):
     redis = RedisCache()
     return {
-        'step': redis.get('{}:step'.format(user_id)),
+        'step': redis.get('{}:step'.format(elaboration_id)),
     }
 
 
 @ajax()
-def show_cluster(request, user_id):
-    elaboration = Elaboration.objects.get(elaboration_id=user_id)
+def show_cluster(request, elaboration_id):
+    elaboration = Elaboration.objects.get(elaboration_id=elaboration_id)
     return elaboration.cluster
 
 
 @ajax()
-def show_tweets(request, user_id):
-    elaboration = Elaboration.objects.get(elaboration_id=user_id)
+def show_tweets(request, elaboration_id):
+    elaboration = Elaboration.objects.get(elaboration_id=elaboration_id)
     topics = request.GET.get('topics')
 
     tweet_list = []

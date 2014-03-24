@@ -26,25 +26,25 @@ urlpatterns = patterns(
     ),
 
     url(
-        r'get_process_status/(?P<user_id>[0-9a-f]{5,40})/$',
+        r'get_process_status/(?P<elaboration_id>[0-9a-f]{5,40})/$',
         'get_process_status',
         name='get_process_status'
     ),
 
     url(
-        r'show/(?P<user_id>[0-9a-f]{5,40})/$',
+        r'show/(?P<elaboration_id>[0-9a-f]{5,40})/$',
         "show_info_page",
         name="show_info_page"
     ),
 
     url(
-        r'show_cluster/(?P<user_id>[0-9a-f]{5,40})/$',
+        r'show_cluster/(?P<elaboration_id>[0-9a-f]{5,40})/$',
         "show_cluster",
         name="show_cluster"
     ),
 
     url(
-        r'show_tweets/(?P<user_id>[0-9a-f]{5,40})/$',
+        r'show_tweets/(?P<elaboration_id>[0-9a-f]{5,40})/$',
         "show_tweets",
         name="show_tweets"
     ),
