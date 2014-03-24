@@ -18,8 +18,8 @@
                 <li>
                     <div class="tweets-user-profile">
                         <img src="<%= el.user.profile_image_url_https %>" alt="<%= el.user.screen_name %>">
-                        <%= el.user.name %>
-                        <%= el.user.screen_name %>
+                        <span class="name"><%= el.user.name %></span>
+                        <span class="twitter-account">@<%= el.user.screen_name %></span>
                     </div>
                     <a href="<%= el.url %>" target="_blank"><%= el.text %></a>
                 </li>

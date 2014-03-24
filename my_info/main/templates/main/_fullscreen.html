@@ -14,10 +14,16 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }}
                             <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li>
-                                <a href="{% url "twitter_callback" %}">Run elaboration</a>
-                            </li>
-                            <li><a href="{% url "elaboration_history" user.pk %}">Elaboration History</a></li>
+                            {% if user == nick %}
+                                <li>
+                                    <a href="{% url "start_elaboration" %}">Run elaboration</a>
+                                </li>
+                                <li><a href="{% url "elaboration_history" user.pk %}">Elaboration History</a></li>
+                            {% else %}
+                                <li>
+                                    <a href="{% url "twitter_callback" %}">My profile</a>
+                                </li>
+                            {% endif %}
                             <li class="divider"></li>
                             <li><a href="{% url "logout" %}">Logout</a></li>
                         </ul>
@@ -30,7 +36,7 @@
         <div class="row" style="margin-top: 40px;">
             <div class="col-md-3">
                 <div id="profile-info">
-                    <img src="{{ image }}" alt="{{ nick }}" />
+                    <div class="profile-image" style="background-image: url({{ image }})"></div>
 
                     <h1>{{ full_name }}</h1>
 
@@ -39,7 +45,6 @@
                     </h1>
 
                     <p>{{ bio }}</p>
-
                 </div>
             </div>
             <div class="col-md-9">

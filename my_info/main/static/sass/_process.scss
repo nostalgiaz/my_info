@@ -1,4 +1,26 @@
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 #process {
+  $animation: spin 3s linear infinite;
+  $radius: 10px;
+  $width: 100px;
+
   & > div {
     position: relative;
     @include opacity(.4);
@@ -10,11 +32,40 @@
     }
   }
 
+  .image-wrapper {
+    width: $width;
+    height: $width;
+    margin: 0 auto;
+    position: relative;
+    display: inline-block;
+  }
+
+  .active:not(.last) {
+    .image-wrapper {
+      @include animation($animation);
+
+      &:after {
+        position: absolute;
+        display: block;
+        content: '';
+        width: $radius;
+        height: $radius;
+        background-color: white;
+        top: ($width - $radius) / 2;
+        left: -$radius / 2;
+        @include border-radius(100%);
+      }
+    }
+    img {
+      @include animation($animation reverse);
+    }
+  }
+
   img {
     width: 100px;
     height: 100px;
-    @include border-radius(100%);
     border: 1px solid $white;
+    @include border-radius(100%);
   }
 
   h2 {

@@ -1,4 +1,14 @@
 @mixin selection {
-    ::-moz-selection { @content; }
-    ::selection { @content; }
+  ::-moz-selection {
+    @content;
+  }
+  ::selection {
+    @content;
+  }
+}
+
+@mixin animation($animation) {
+  -webkit-animation: $animation;
+  -moz-animation: $animation;
+  animation: $animation;
 }

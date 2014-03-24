@@ -5,10 +5,16 @@
   margin-top: 50px;
   text-align: center;
 
-  img {
+  .profile-image {
     @include border-radius(100%);
     width: 150px;
+    height: 150px;
     border: 1px solid $white;
+
+    background-size: cover;
+    background-position: 50% 50%;
+
+    margin: 0 auto;
   }
 
   h1 + h1 {

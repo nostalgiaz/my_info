@@ -8,22 +8,30 @@
         <h2>your Clusterify progress</h2>
 
         <div class="col-md-3">
-            <img src="{% static "img/twitter.png" %}" alt="twitter">
+            <div class="image-wrapper">
+                <img src="{% static "img/twitter.png" %}" alt="twitter">
+            </div>
             <h4>Twitter</h4>
             <p>Getting data from your timeline.</p>
         </div>
         <div class="col-md-3">
-            <img src="{% static "img/spaziodati.png" %}" alt="spaziodati">
+            <div class="image-wrapper">
+                <img src="{% static "img/spaziodati.png" %}" alt="spaziodati">
+            </div>
             <h4>Annotation</h4>
             <p>Using dataTXT to annotate your tweets.</p>
         </div>
         <div class="col-md-3">
-            <img src="{% static "img/clustering.png" %}" alt="clustering">
+            <div class="image-wrapper">
+                <img src="{% static "img/clustering.png" %}" alt="clustering">
+            </div>
             <h4>Clustering</h4>
             <p>Running clustering process.</p>
         </div>
-        <div class="col-md-3">
-            <img src="{% static "img/result.png" %}" alt="result">
+        <div class="col-md-3 last">
+            <div class="image-wrapper">
+                <img src="{% static "img/result.png" %}" alt="result">
+            </div>
             <h4>Clusterify</h4>
             <a href="{% url "show_info_page" elaboration_id %}" class="btn btn-block btn-danger">Checkout your data!</a>
         </div>
