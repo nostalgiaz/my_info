@@ -4,10 +4,9 @@
   height: 100%;
   top: 0;
   left: 0;
-  background: rgba(153, 204, 51, 0.9);
 }
 
-.overlay .overlay-close {
+.overlay.open .overlay-close {
   width: 80px;
   height: 80px;
   position: fixed;
@@ -32,37 +31,35 @@
 }
 
 .tweet-and-cluster.overlay-open {
-  -webkit-transform: scale(0.8);
-  transform: scale(0.8);
+  @include scale(0.8);
 }
 
 .overlay-contentscale {
   visibility: hidden;
-  -webkit-transform: translateY(100%);
-  transform: translateY(100%);
+  @include translateY(100%);
+
   -webkit-transition: -webkit-transform 0.5s, visibility 0s 0.5s;
   transition: transform 0.5s, visibility 0s 0.5s;
 }
 
 .overlay-contentscale.open {
   visibility: visible;
-  -webkit-transform: translateY(0%);
-  transform: translateY(0%);
+   @include translateY(0%);
   -webkit-transition: -webkit-transform 0.5s;
   transition: transform 0.5s;
 }
 
 .overlay {
-  overflow: auto;
   z-index: 2;
   $hover_color: darken(white, 5%);
 
   ul {
-    width: 600px;
-    margin: 50px auto;
+    overflow: scroll;
+    height: 100%;
+    width: 100%;
+    padding: 50px 25%;
     font-size: 20px;
     list-style: none;
-    padding: 0;
     font-family: $font-sans;
     font-weight: 400;
 
@@ -112,5 +109,3 @@
 #tweets {
   text-align: left;
 }
-
-
