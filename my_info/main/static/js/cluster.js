@@ -4,7 +4,7 @@
     , height = $(document).height()
     , padding = 1.5 // separation between same-color circles
     , clusterPadding = 10 // separation between different-color circles
-    , maxRadius = 12
+    , maxRadius = 15
     , minOpacity = .6
     , maxOpacity = 1
     ;
@@ -27,7 +27,7 @@
         var r = size * 10
           , d = {
             cluster: i,
-            radius: r,
+            radius: r * 1.3,
             url: url
           };
 
