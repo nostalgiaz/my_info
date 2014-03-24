@@ -104,9 +104,6 @@ def show_info_page(request, user_id):
     elaboration = get_object_or_404(Elaboration, elaboration_id=user_id)
     user_info = UserInfo.objects.get(user=elaboration.user)
 
-    redis = RedisCache()
-    redis.delete('{}:step'.format(user_id))
-
     return render(request, "main/elaboration_render.html", {
         'user_id': user_id,
         'image': user_info.image,
