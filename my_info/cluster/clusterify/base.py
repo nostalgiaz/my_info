@@ -14,11 +14,11 @@ class BaseClusterify(object):
         self.reader = reader
         self.datatxt = DataTXT()
         self.snippets = []
-        self.n_topic = 0
         self.pages = []
         self.topic_set = defaultdict(int)
         self.rel_matrix = []
         self.k = k
+        self.topics = []
         seed((1000, 2000))
 
     def annotate(self):
@@ -32,8 +32,6 @@ class BaseClusterify(object):
         for _, snippet in self.snippets.iteritems():
             for page, _ in snippet.get('annotations').iteritems():
                 self.topic_set[page] += 1.
-                self.n_topic += 1.
-                self.pages.append(page)
 
     def _generate_adjagent_matrix(self):
         self._generate_topic_set()

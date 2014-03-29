@@ -34,6 +34,7 @@ u'http://it.wikipedia.org/wiki/Google_Chrome']
         >>> a.annotate(test="annotations")
         []
         """
+        t_set = set()
         tweets = defaultdict(list)
 
         annotated_texts_tmp = []
@@ -57,6 +58,19 @@ u'http://it.wikipedia.org/wiki/Google_Chrome']
             if annotation is None:
                 continue
 
+            # for ann in annotation['annotations'].values():
+            #     page = ann.
+            #     if '://it.' in en_page:
+            #         en_page = self.datatxt.interWikiRecon.get_inter_wikilinks(
+            #             page).get('EN')
+            #
+            #         if not en_page:
+            #             en_page = page
+            #
+            #     if not en_page in t_set:
+            #         t_set.add(en_page)
+            #         self.pages.append(en_page)en_page
+
             d = {
                 'text': text,
                 'url': self.urls[i],
@@ -65,8 +79,16 @@ u'http://it.wikipedia.org/wiki/Google_Chrome']
             }
 
             for topics, ann in annotation['annotations'].items():
-                annotation['annotations'][topics] = ann['confidence']
-                tweets[topics].append(d)
+                page = topics
+                if '://it.' in topics:
+                    page = self.datatxt.interWikiRecon.get_inter_wikilinks(
+                        topics).get('EN')
+
+                    if not page:
+                        page = topics
+
+                annotation['annotations'][page] = ann['confidence']
+                tweets[page].append(d)
 
             annotated_texts_tmp.append(annotation)
 

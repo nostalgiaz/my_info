@@ -102,9 +102,8 @@
             , tmplCurrent = '<span class="annotated-entity"><%= spot %></span>'
             , tweets = [];
 
-          $.each(data, function (i, ell) {
-            var el = ell[0]
-              , tweet = {
+          $.each(data, function (i, el) {
+            var tweet = {
                 'url': el.url,
                 'text': el.text,
                 'user': el.user
@@ -127,9 +126,9 @@
               end = item['end'];
 
               if (prevItem)
-                if (item['start'] >= prevItem['start'] && prevItem['end'] <= item['end'])
+                if (item['start'] >= prevItem['start'] && prevItem['end'] >= item['end'])
                   continue;
-                else if (prevItem['start'] >= item['start'] && item['end'] <= prevItem['end'])
+                else if (prevItem['start'] >= item['start'] && item['end'] >= prevItem['end'])
                   continue;
 
               current = _.template(tmplCurrent, {

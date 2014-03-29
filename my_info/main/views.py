@@ -1,5 +1,6 @@
 from hashlib import sha1
 from datetime import datetime
+import simplejson as json
 
 from ajaxutils.decorators import ajax
 
@@ -130,16 +131,18 @@ def show_cluster(request, elaboration_id):
 @ajax()
 def show_tweets(request, elaboration_id):
     elaboration = Elaboration.objects.get(elaboration_id=elaboration_id)
-    topics = request.GET.get('topics')
+    topics = json.loads(request.GET.get('topics'))
 
     tweet_list = []
     tweet_set = set()
 
     for k, v in elaboration.tweets.iteritems():
-        text = v[0]['text']
-        if k in topics and text not in tweet_set:
-            tweet_set.add(text)
-            tweet_list.append(v)
+        if k in topics:
+            for tweet in v:
+                text = tweet['text']
+                if text not in tweet_set:
+                    tweet_set.add(text)
+                    tweet_list.append(tweet)
 
     return tweet_list
 
