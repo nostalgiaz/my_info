@@ -22,10 +22,8 @@ class DataTXT(object):
         try:
             annotated = self.datatxt.nex(
                 args[0],
-                min_confidence=.7,
+                min_confidence=.6,
                 parse_hashtag=True,
-                deep_analysis=True,
-                min_length=4,
                 epsilon=.5,
             )
             id_ = sha1(annotated.lang + str(annotated.annotations)).hexdigest()
