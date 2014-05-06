@@ -54,6 +54,7 @@ def create_info_page_task(username, elaboration_id, url):
         k = 10
 
     redis.set('{}:step'.format(elaboration_id), 1)
+    # clusterify = KMeansClusterify(TwitterReader(username), k)
     clusterify = AffinityPropagationClusterify(TwitterReader(username), k)
     # clusterify = SpectralClusterify(TwitterReader(username), k)
     # clusterify = StarClusterify(TwitterReader(username))

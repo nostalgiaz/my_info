@@ -43,12 +43,18 @@ class DataTXT(object):
     @staticmethod
     def _rel_request(lang, topic1, topic2):
         url = 'http://localhost:18080/datatxt/relatedness'
+        # url = 'http://api.dandelion.eu/datatxt/rel/v1/'
         try:
             return requests.get(url, params={
                 'lang': lang,
                 'page1': topic1,
+                # 'topic1': topic1,
                 'page2': topic2,
+                # 'topic2': topic2,
+                # '$app_id': DATATXT_APP_ID,
+                # '$app_key': DATATXT_APP_KEY
             }).json()['relatedness']
+            # }).json()['relatedness'][0]['weight']
         except Exception:  # topic1 or topic2 doesn't exist
             return 0
 

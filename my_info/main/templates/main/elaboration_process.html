@@ -49,9 +49,11 @@
 
             (function poll() {
                 $.get("{% url "get_process_status" elaboration_id %}", function (data) {
-                    if (data.step > 0) {
+                    if (data.step >= 0) {
                         $status.removeClass('active');
-                        $status.eq(data.step - 1).addClass('active');
+                        if(data.step > 0)
+                            $status.eq(data.step - 1).addClass('active');
+                        else $status.eq(0).addClass('active');
                     }
                     if (data.step != maxStatus) {
                         setTimeout(function () {
