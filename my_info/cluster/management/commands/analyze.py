@@ -89,4 +89,5 @@ class Command(BaseCommand):
                 actual_list = [actual[key] for key in topic_sorted]
                 results.append(adjusted_rand_score(expected_list, actual_list))
             table.add_row([worksheet.title] + results)
+
         print(table)

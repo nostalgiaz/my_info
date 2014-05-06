@@ -39,14 +39,19 @@ class BaseClusterify(object):
         logger.info("topic set")
         logger.info(self.topic_set)
 
-        rel = zeros((len(self.topic_set), len(self.topic_set)))
+        topics = self.topic_set.keys()
+        rel = zeros((len(topics), len(topics)))
 
-        for i, topic1 in enumerate(self.topic_set):
-            for j, topic2 in enumerate(self.topic_set):
-                if j > i:
-                    rel_value = self.datatxt.rel(topic1, topic2)
-                    rel[i][j] = rel_value
-                    rel[j][i] = rel_value
+        BATCH_SIZE = 25
+        for offsetX in xrange(0, len(topics), BATCH_SIZE):
+            for offsetY in xrange(offsetX, len(topics), BATCH_SIZE):
+                topicsX = topics[offsetX: offsetX + BATCH_SIZE]
+                topicsY = topics[offsetY: offsetY + BATCH_SIZE]
+                rel_values = self.datatxt.rel(topicsX, topicsY)
+                for i in xrange(0, len(topicsX)):
+                    for j in xrange(0, len(topicsY)):
+                        rel[offsetX + i][offsetY + j] = rel_values[i][j]
+                        rel[offsetY + j][offsetX + i] = rel_values[i][j]
 
         self.rel_matrix = rel
 

@@ -1,6 +1,7 @@
 from hashlib import sha1
 from celery.utils.log import get_task_logger
 from dandelion import datatxt, DandelionException
+from numpy import ones, zeros
 from my_info.cluster.cache import RedisCache
 from my_info.cluster.recon.interwikirecon import InterWikiRecon
 from my_info.settings import DATATXT_APP_ID, DATATXT_APP_KEY
@@ -22,10 +23,8 @@ class DataTXT(object):
         try:
             annotated = self.datatxt.nex(
                 args[0],
-                min_confidence=.7,
+                min_confidence=.6,
                 parse_hashtag=True,
-                deep_analysis=True,
-                min_length=4,
                 epsilon=.5,
             )
             id_ = sha1(annotated.lang + str(annotated.annotations)).hexdigest()
@@ -42,49 +41,70 @@ class DataTXT(object):
 
     @staticmethod
     def _rel_request(lang, topic1, topic2):
-        url = 'http://localhost:18080/datatxt/relatedness'
-        # url = 'http://api.dandelion.eu/datatxt/rel/v1/'
+        url = 'http://api.dandelion.eu/datatxt/rel/v1'
         try:
             return requests.get(url, params={
                 'lang': lang,
-                'page1': topic1,
-                # 'topic1': topic1,
-                'page2': topic2,
-                # 'topic2': topic2,
-                # '$app_id': DATATXT_APP_ID,
-                # '$app_key': DATATXT_APP_KEY
-            }).json()['relatedness']
-            # }).json()['relatedness'][0]['weight']
+                'topic1': topic1,
+                'topic2': topic2,
+                '$app_id': DATATXT_APP_ID,
+                '$app_key': DATATXT_APP_KEY,
+            }).json()
         except Exception:  # topic1 or topic2 doesn't exist
             return 0
 
-    def rel(self, topic1, topic2, enable_cache=True):
-        topics = sorted([topic1, topic2])
-        topic1, topic2 = topics[0], topics[1]
-        cache_key = "{}-{}:relatedness".format(topic1, topic2)
+    def rel(self, topics1, topics2, enable_cache=True):
+        rel = zeros((len(topics1), len(topics2)))
 
-        lang1 = 'it' if '://it.' in topic1 else 'en'
-        lang2 = 'it' if '://it.' in topic2 else 'en'
+        response = None
+        for i, topic1 in enumerate(topics1):
+            for j, topic2 in enumerate(topics2):
+                cache_key = "{}-{}:relatedness".format(topic1, topic2)
+                if enable_cache and self.cache.has(cache_key):
+                    value = self.cache.get(cache_key)
+                else:
+                    if response is None:
+                        response = self._rel(topics1, topics2)
+                    value = response[i][j]
+                    self.cache.set(cache_key, value)
 
-        if enable_cache and not self.cache.has(cache_key):
-            if lang1 == lang2:
-                value = self._rel_request(lang1, topic1, topic2)
-            else:
-                topic1_pages = self.interWikiRecon.get_inter_wikilinks(topic1)
-                topic2_pages = self.interWikiRecon.get_inter_wikilinks(topic2)
+                rel[i][j] = value
+        return rel
 
-                topic1_en = topic1_pages.get('en')
-                topic1_it = topic1_pages.get('it')
-                topic2_en = topic2_pages.get('en')
-                topic2_it = topic2_pages.get('it')
-                value_en = -1
-                value_it = -1
+    def _rel(self, topics1, topics2):
 
-                if topic1_en is not None and topic2_en is not None:
-                    value_en = self._rel_request('en', topic1_en, topic2_en)
+        def lang_topic(topics, wanted_lang):
+            for topic in topics:
+                lang = 'it' if '://it.' in topic else 'en'
+                if lang == wanted_lang:
+                    yield topic
+                else:
+                    pages = self.interWikiRecon.get_inter_wikilinks(topic)
+                    yield pages.get(wanted_lang.upper())
 
-                if topic1_it is not None and topic2_it is not None:
-                    value_it = self._rel_request('it', topic1_it, topic2_it)
+        it_topics1 = list(lang_topic(topics1, 'it'))
+        it_topics2 = list(lang_topic(topics2, 'it'))
+        en_topics1 = list(lang_topic(topics1, 'en'))
+        en_topics2 = list(lang_topic(topics2, 'en'))
+
+        it_response = {
+            tuple(sorted([x['topic1']['topic']['uri'], x['topic2']['topic']['uri']])): x['weight']
+            for x in self._rel_request('it', it_topics1, it_topics2).get('relatedness', [])
+        }
+        en_response = {
+            tuple(sorted([x['topic1']['topic']['uri'], x['topic2']['topic']['uri']])): x['weight']
+            for x in self._rel_request('en', en_topics1, en_topics2).get('relatedness', [])
+        }
+
+        response = zeros((len(topics1), len(topics2)))
+        for i, (it_topic1, en_topic1) in enumerate(zip(it_topics1, en_topics1)):
+            for j, (it_topic2, en_topic2) in enumerate(zip(it_topics2, en_topics2)):
+                value_it = it_response.get(
+                    tuple(sorted([it_topic1, it_topic2])), -1
+                )
+                value_en = en_response.get(
+                    tuple(sorted([en_topic1, en_topic2])), -1
+                )
 
                 if value_it != -1:
                     if value_en != -1:
@@ -96,10 +116,5 @@ class DataTXT(object):
                         value = value_en
                     else:
                         value = 0
-
-            # value = 0 if value < .3 else value
-
-            logger.info(cache_key + ": " + str(value))
-            self.cache.set(cache_key, value)
-
-        return self.cache.get(cache_key)
+                response[i][j] = value
+        return response

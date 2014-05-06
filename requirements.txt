@@ -2,13 +2,21 @@
 -e git://github.com/armisael/python-dandelion.git#egg=dandelion-eu
 Django==1.5.4
 Jinja2==2.7.1
+django-bower==4.8.1
+django-celery==3.1.9
+django-extensions==1.2.2
+jsonfield==0.9.20
 South==0.8.2
 Werkzeug==0.9.4
-django-extensions==1.2.2
 psycopg2==2.5.1
+
 python-social-auth==0.1.14
 requests==2.0.0
 simplejson==3.3.1
 twython==3.1.0
 cluster==1.1.2
 Pygments==1.6
+gspread==0.1.0
+scikit-learn==0.14.1
+
+PrettyTable==0.7.2
