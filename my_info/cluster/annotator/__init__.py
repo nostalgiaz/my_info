@@ -19,14 +19,13 @@ class Annotator(object):
         """
         >>> a = Annotator([('mozilla funziona google chrome', '', '')])
         >>> a.annotate(test="annotations")
-        [u'http://it.wikipedia.org/wiki/Mozilla', \
-u'http://it.wikipedia.org/wiki/Google_Chrome']
+        [u'http://en.wikipedia.org/wiki/Google_Chrome', u'http://en.wikipedia.org/wiki/Mozilla']
         >>> a = Annotator([('@mozilla funziona google chrome', '', '')])
         >>> a.annotate(test="annotations")
-        [u'http://it.wikipedia.org/wiki/Google_Chrome']
+        [u'http://en.wikipedia.org/wiki/Google_Chrome']
         >>> a = Annotator([('mozilla funziona @google_chrome', '', '')])
         >>> a.annotate(test="annotations")
-        [u'http://it.wikipedia.org/wiki/Mozilla']
+        [u'http://en.wikipedia.org/wiki/Mozilla']
         >>> a = Annotator([('@mozilla funziona @google_chrome', '', '')])
         >>> a.annotate(test="annotations")
         []
@@ -58,19 +57,6 @@ u'http://it.wikipedia.org/wiki/Google_Chrome']
             if annotation is None:
                 continue
 
-            # for ann in annotation['annotations'].values():
-            #     page = ann.
-            #     if '://it.' in en_page:
-            #         en_page = self.datatxt.interWikiRecon.get_inter_wikilinks(
-            #             page).get('EN')
-            #
-            #         if not en_page:
-            #             en_page = page
-            #
-            #     if not en_page in t_set:
-            #         t_set.add(en_page)
-            #         self.pages.append(en_page)en_page
-
             d = {
                 'text': text,
                 'url': self.urls[i],
@@ -78,18 +64,24 @@ u'http://it.wikipedia.org/wiki/Google_Chrome']
                 'annotations': annotation['annotations'].values(),
             }
 
+            nice_page = {}
             for topics, ann in annotation['annotations'].items():
                 page = topics
-                if '://it.' in topics:
+                if '://it.' in topics:  # italian entity
                     page = self.datatxt.interWikiRecon.get_inter_wikilinks(
                         topics).get('EN')
 
-                    if not page:
+                    if page is None:
                         page = topics
+                    else:
+                        nice_page[page] = ann['confidence']
+                else:
+                    nice_page[page] = ann['confidence']
 
-                annotation['annotations'][page] = ann['confidence']
                 tweets[page].append(d)
 
+            del annotation['annotations']
+            annotation['annotations'] = nice_page
             annotated_texts_tmp.append(annotation)
 
         annotated_texts = {

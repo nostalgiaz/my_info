@@ -10,11 +10,11 @@ class InterWikiRecon(object):
         """
         >>> a = InterWikiRecon()
         >>> a.get_inter_wikilinks('http://it.wikipedia.org/wiki/Mozilla')
-        {u'en': u'http://en.wikipedia.org/wiki/Mozilla', \
-u'it': u'http://it.wikipedia.org/wiki/Mozilla'}
+        {u'EN': u'http://en.wikipedia.org/wiki/Mozilla', \
+u'IT': u'http://it.wikipedia.org/wiki/Mozilla'}
         >>> a.get_inter_wikilinks('http://en.wikipedia.org/wiki/Mozilla')
-        {u'en': u'http://en.wikipedia.org/wiki/Mozilla', \
-u'it': u'http://it.wikipedia.org/wiki/Mozilla'}
+        {u'EN': u'http://en.wikipedia.org/wiki/Mozilla', \
+u'IT': u'http://it.wikipedia.org/wiki/Mozilla'}
         """
         key = "{}:interwikirecon".format(page)
         if not self.cache.has(key):
