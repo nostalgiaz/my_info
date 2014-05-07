@@ -42,7 +42,7 @@ class BaseClusterify(object):
         topics = self.topic_set.keys()
         rel = zeros((len(topics), len(topics)))
 
-        BATCH_SIZE = 25
+        BATCH_SIZE = 10
         for offsetX in xrange(0, len(topics), BATCH_SIZE):
             for offsetY in xrange(offsetX, len(topics), BATCH_SIZE):
                 topicsX = topics[offsetX: offsetX + BATCH_SIZE]
