@@ -14,6 +14,7 @@ class DataTXT(object):
     def __init__(self):
         self.interWikiRecon = InterWikiRecon()
         self.cache = RedisCache()
+        self.requests = requests.session()
         self.datatxt = datatxt.DataTXT(
             app_id=DATATXT_APP_ID,
             app_key=DATATXT_APP_KEY,
@@ -39,13 +40,12 @@ class DataTXT(object):
         except DandelionException:
             logger.info("dandelion exception: " + args[0])
 
-    @staticmethod
-    def _rel_request(lang, topic1, topic2):
+    def _rel_request(self, lang, topic1, topic2):
         if all(x is None for x in topic1) or all(x is None for x in topic2):
             return {}
 
         url = 'http://api.dandelion.eu/datatxt/rel/v1'
-        response = requests.get(url, params={
+        response = self.requests.get(url, params={
             'lang': lang,
             'topic1': topic1,
             'topic2': topic2,

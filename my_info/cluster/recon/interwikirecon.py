@@ -5,6 +5,7 @@ from my_info.cluster.cache import RedisCache
 class InterWikiRecon(object):
     def __init__(self):
         self.cache = RedisCache()
+        self.requests = requests.session()
 
     def get_inter_wikilinks(self, page):
         """
@@ -27,7 +28,7 @@ u'IT': u'http://it.wikipedia.org/wiki/Mozilla'}
                   '' % (page, new_lang)
 
             try:
-                new_page = requests.get(url).json()['q0']['result'][0]['id']
+                new_page = self.requests.get(url).json()['q0']['result'][0]['id']
             except IndexError:
                 new_page = None
 

@@ -77,17 +77,20 @@ class Command(BaseCommand):
             reader = StreamReader(topic_sorted)
             results = []
             for klass in self.CLUSTER_KLASSES:
-                clusterify = klass(reader, k)
-                clusterify.annotate()
-                actual_clusters = clusterify.do_cluster()
+                try:
+                    clusterify = klass(reader, k)
+                    clusterify.annotate()
+                    actual_clusters = clusterify.do_cluster()
 
-                actual = {
-                    y: idx
-                    for idx, cluster in enumerate(actual_clusters['clusters'])
-                    for y in cluster.keys()
-                }
-                actual_list = [actual[key] for key in topic_sorted]
-                results.append(adjusted_rand_score(expected_list, actual_list))
+                    actual = {
+                        y: idx
+                        for idx, cluster in enumerate(actual_clusters['clusters'])
+                        for y in cluster.keys()
+                    }
+                    actual_list = [actual[key] for key in topic_sorted]
+                    results.append(adjusted_rand_score(expected_list, actual_list))
+                except:
+                    results.append(None)
             table.add_row([worksheet.title] + results)
 
         print(table)
