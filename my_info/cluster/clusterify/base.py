@@ -44,8 +44,8 @@ class BaseClusterify(object):
 
         BATCH_SIZE = 10
         for offsetX in xrange(0, len(topics), BATCH_SIZE):
+            topicsX = topics[offsetX: offsetX + BATCH_SIZE]
             for offsetY in xrange(offsetX, len(topics), BATCH_SIZE):
-                topicsX = topics[offsetX: offsetX + BATCH_SIZE]
                 topicsY = topics[offsetY: offsetY + BATCH_SIZE]
                 rel_values = self.datatxt.rel(topicsX, topicsY)
                 for i in xrange(0, len(topicsX)):

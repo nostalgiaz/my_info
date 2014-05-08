@@ -41,6 +41,9 @@ class DataTXT(object):
 
     @staticmethod
     def _rel_request(lang, topic1, topic2):
+        if all(x is None for x in topic1) or all(x is None for x in topic2):
+            return {}
+
         url = 'http://api.dandelion.eu/datatxt/rel/v1'
         response = requests.get(url, params={
             'lang': lang,
@@ -82,9 +85,7 @@ class DataTXT(object):
                     yield topic
                 else:
                     pages = self.interWikiRecon.get_inter_wikilinks(topic)
-                    topic = pages.get(wanted_lang.upper())
-                    if topic:
-                        yield topic
+                    yield pages.get(wanted_lang.upper())
 
         it_topics1 = list(lang_topic(topics1, 'it'))
         it_topics2 = list(lang_topic(topics2, 'it'))
@@ -106,10 +107,10 @@ class DataTXT(object):
         for i, (it_topic1, en_topic1) in enumerate(zip(it_topics1, en_topics1)):
             for j, (it_topic2, en_topic2) in enumerate(zip(it_topics2, en_topics2)):
                 value_it = it_response.get(
-                    tuple(sorted([it_topic1, it_topic2])), 0
+                    tuple(sorted([it_topic1, it_topic2])), 0.
                 )
                 value_en = en_response.get(
-                    tuple(sorted([en_topic1, en_topic2])), 0
+                    tuple(sorted([en_topic1, en_topic2])), 0.
                 )
 
                 response[i][j] = max(value_it, value_en)
