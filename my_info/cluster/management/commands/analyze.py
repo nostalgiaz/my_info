@@ -1,11 +1,12 @@
 from __future__ import unicode_literals, print_function
-from collections import defaultdict
 import gspread
 from django.core.management import BaseCommand
 from prettytable import PrettyTable
 from sklearn.metrics import adjusted_rand_score
 from my_info.cluster.clusterify.affinitypropagationclusterify import \
     AffinityPropagationClusterify
+from my_info.cluster.clusterify.hierarchicalclusterify import \
+    HierarchicalClusterify
 from my_info.cluster.clusterify.kmeansclusterify import KMeansClusterify
 from my_info.cluster.clusterify.spectralclusterify import SpectralClusterify
 
@@ -30,6 +31,10 @@ class StreamSpectralClusterify(StreamMixin, SpectralClusterify):
     pass
 
 
+class StreamHierarchicalClusterify(StreamMixin, HierarchicalClusterify):
+    pass
+
+
 class StreamReader(object):
     def __init__(self, topic_list):
         self.snippets = {
@@ -42,9 +47,12 @@ class Command(BaseCommand):
     USERNAME = 'gufougolino@gmail.com'
     PASSWORD = 'ugopassword'
     DOC_TITLE = "clusterify-dataset"
-    CLUSTER_KLASSES = [StreamAffinityPropagationClusterify,
-                       StreamKMeansClusterify,
-                       StreamSpectralClusterify]
+    CLUSTER_KLASSES = [
+        StreamAffinityPropagationClusterify,
+        StreamHierarchicalClusterify,
+        StreamKMeansClusterify,
+        StreamSpectralClusterify
+    ]
 
     def handle(self, *args, **options):
         try:
@@ -88,9 +96,12 @@ class Command(BaseCommand):
                         for y in cluster.keys()
                     }
                     actual_list = [actual[key] for key in topic_sorted]
-                    results.append(adjusted_rand_score(expected_list, actual_list))
-                except:
+                    results.append("(" + worksheet.title + ", " + str(adjusted_rand_score(expected_list, actual_list)) + ")")
+                    # results.append((adjusted_rand_score(expected_list, actual_list) + 1) * 50)
+                except Exception as e:
+                    print(e)
                     results.append(None)
             table.add_row([worksheet.title] + results)
+            # break
 
         print(table)
