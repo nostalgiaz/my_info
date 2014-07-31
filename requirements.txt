@@ -1,5 +1,6 @@
--e git://github.com/SpazioDati/coffin.git@25eb6593456ec7387de1ae65083cafa68794abb7#egg=Coffin-dev
--e git://github.com/armisael/python-dandelion.git#egg=dandelion-eu
+https://github.com/SpazioDati/coffin/tarball/25eb6593456ec7387de1ae65083cafa68794abb7#egg=Coffin-dev
+dandelion-eu==0.2.2
+django-ajaxutils
 Django==1.5.4
 Jinja2==2.7.1
 django-bower==4.8.1
@@ -8,7 +9,6 @@ django-extensions==1.2.2
 jsonfield==0.9.20
 South==0.8.2
 Werkzeug==0.9.4
-psycopg2==2.5.1
 
 python-social-auth==0.1.14
 requests==2.0.0
@@ -20,3 +20,6 @@ gspread==0.1.0
 scikit-learn==0.14.1
 
 PrettyTable==0.7.2
+
+redis
+psycopg2
