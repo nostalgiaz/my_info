@@ -12,7 +12,7 @@ from my_info.cluster.clusterify.spectralclusterify import SpectralClusterify
 from my_info.cluster.clusterify.kmeansclusterify import KMeansClusterify
 from my_info.cluster.clusterify.starclusterify import StarClusterify
 from my_info.cluster.helpers import get_twitter_from_username
-from my_info.cluster.reader import TwitterReader
+from my_info.cluster.reader import TwitterProfileReader
 from my_info.local_settings import EMAIL_HOST_USER
 
 from my_info.main.celery import app
@@ -54,10 +54,10 @@ def create_info_page_task(username, elaboration_id, url):
         k = 10
 
     redis.set('{}:step'.format(elaboration_id), 1)
-    # clusterify = KMeansClusterify(TwitterReader(username), k)
-    clusterify = AffinityPropagationClusterify(TwitterReader(username), k)
-    # clusterify = SpectralClusterify(TwitterReader(username), k)
-    # clusterify = StarClusterify(TwitterReader(username))
+    # clusterify = KMeansClusterify(TwitterProfileReader(username), k)
+    clusterify = AffinityPropagationClusterify(TwitterProfileReader(username), k)
+    # clusterify = SpectralClusterify(TwitterProfileReader(username), k)
+    # clusterify = StarClusterify(TwitterProfileReader(username))
 
     redis.set('{}:step'.format(elaboration_id), 2)
     elaboration.tweets = clusterify.annotate()

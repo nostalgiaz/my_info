@@ -6,7 +6,7 @@ from my_info.cluster.clusterify.affinitypropagationclusterify import \
 from my_info.cluster.clusterify.spectralclusterify import SpectralClusterify
 from my_info.cluster.clusterify.kmeansclusterify import KMeansClusterify
 from my_info.cluster.clusterify.starclusterify import StarClusterify
-from my_info.cluster.reader import TwitterReader
+from my_info.cluster.reader import TwitterProfileReader
 
 
 class Command(BaseCommand):
@@ -21,7 +21,7 @@ class Command(BaseCommand):
         k = 10
         pp = pprint.PrettyPrinter(indent=4)
         username = args[0]
-        reader = TwitterReader(username)
+        reader = TwitterProfileReader(username)
 
         try:
             clusterify = None

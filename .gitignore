@@ -5,4 +5,4 @@
 local_settings.py
 components
 my_info/main/static/.sass-cache/
-my_info/main/static/*.css
+my_info/main/static/stylesheets/*.css
